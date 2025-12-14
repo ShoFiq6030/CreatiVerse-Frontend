@@ -1,10 +1,10 @@
-import React from 'react'
+import React from "react";
+import HeroSection from "../components/home/Hero";
 
 export default function Home() {
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold">Home</h1>
-      <p>Welcome to the home page.</p>
+      <HeroSection />
     </div>
-  )
+  );
 }
