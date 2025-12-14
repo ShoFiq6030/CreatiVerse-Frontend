@@ -29,8 +29,8 @@ export default function NavBar() {
   };
 
   return (
-    <div className="container mx-auto bg-base-100 shadow-sm sticky z-10">
-      <div className="navbar  ">
+    <div className="container mx-auto bg-base-100 shadow-sm ">
+      <div className="navbar z-10  ">
         <div className="md:flex-1">
           <Link>
             <img src={logo} alt="logo" className="w-24" />
