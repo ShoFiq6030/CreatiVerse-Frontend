@@ -1,9 +1,16 @@
 import { Link, NavLink } from "react-router";
 import ThemeToggle from "./ThemeToggle";
 import logo from "../../assets/logo.png";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { RiCloseLargeLine } from "react-icons/ri";
+import { useState } from "react";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function NavBar() {
+  const [openMenu, setOpenMenu] = useState(false);
   const user = false;
+  const { theme } = useTheme();
+
   const navItems = [
     { name: "Home", path: "/" },
     { name: "All Contest", path: "/all-contest" },
@@ -17,35 +24,73 @@ export default function NavBar() {
     { name: "My Properties", path: "/my-properties", private: true },
     { name: "My Ratings", path: "/my-ratings", private: true },
   ];
+  const handleMenu = () => {
+    setOpenMenu(!openMenu);
+  };
 
   return (
     <div className="navbar bg-base-100 shadow-sm">
-      <div className="flex-1">
+      <div className="md:flex-1">
         <Link>
           <img src={logo} alt="logo" className="w-24" />
         </Link>
       </div>
-      <div className=" flex items-center gap-4">
-        {navItems.map((item, i) => {
-          if (item.authOnly && user) return null;
-          if (item.private && !user) return null;
-          return (
-            <NavLink
-              key={i}
-              to={item.path}
-              className={({ isActive }) =>
-                `hover:text-red-600 font-semibold text-lg transition   ${
-                  item.name === "Login" || item.name === "Register" ? "btn" : ""
-                } ${isActive ? "text-red-500" : ""}`
-              }
-            >
-              {item.name}
-            </NavLink>
-          );
-        })}
+      {/* desktop menu  */}
+      <div className="hidden md:block">
+        <div className=" flex items-center gap-4">
+          {navItems.map((item, i) => {
+            if (item.authOnly && user) return null;
+            if (item.private && !user) return null;
+            return (
+              <NavLink
+                key={i}
+                to={item.path}
+                className={({ isActive }) =>
+                  `hover:text-red-600 font-semibold text-lg transition   ${
+                    item.name === "Login" || item.name === "Register"
+                      ? "btn"
+                      : ""
+                  } ${isActive ? "text-red-500" : ""}`
+                }
+              >
+                {item.name}
+              </NavLink>
+            );
+          })}
+        </div>
+      </div>
+      {/* mobile menu  */}
+      <div className="  md:hidden flex w-screen ">
+        {openMenu && (
+          <div
+            className={` absolute top-16 left-0 w-full py-4   ${
+              theme === "light" ? "bg-gray-300/80" : "bg-gray-600/80"
+            } flex flex-col items-center justify-center gap-4  `}
+          >
+            {navItems.map((item, i) => {
+              if (item.authOnly && user) return null;
+              if (item.private && !user) return null;
+              return (
+                <NavLink
+                  key={i}
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `hover:text-red-600 font-semibold text-lg transition   ${
+                      item.name === "Login" || item.name === "Register"
+                        ? "btn"
+                        : ""
+                    } ${isActive ? "text-red-500" : ""}`
+                  }
+                >
+                  {item.name}
+                </NavLink>
+              );
+            })}
+          </div>
+        )}
       </div>
 
-      <div className="flex-none">
+      <div className="flex">
         <div className="dropdown dropdown-end px-5">
           <ThemeToggle />
         </div>
@@ -80,6 +125,13 @@ export default function NavBar() {
             </ul>
           </div>
         )}
+        <div className="md:hidden" onClick={handleMenu}>
+          {openMenu ? (
+            <RiCloseLargeLine size={32} />
+          ) : (
+            <GiHamburgerMenu size={32} />
+          )}
+        </div>
       </div>
     </div>
   );

@@ -31,7 +31,7 @@ export default function ThemeToggle() {
         type="checkbox"
         className="theme-controller"
         value="synthwave"
-        checked={theme === "dark"}
+        checked={theme === "light"}
         onChange={toggleTheme}
       />
 
