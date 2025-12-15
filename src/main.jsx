@@ -6,14 +6,17 @@ import router from "./router/Router.jsx";
 import { ThemeProvider } from "./context/ThemeContest.jsx";
 import QueryProvider from "./provider/QueryProvider.jsx";
 import ToastProvider from "./provider/ToastProvider";
+import AuthProvider from "./context/AuthContext";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
       <QueryProvider>
-        <ToastProvider>
-          <RouterProvider router={router} />
-        </ToastProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <RouterProvider router={router} />
+          </ToastProvider>
+        </AuthProvider>
       </QueryProvider>
     </ThemeProvider>
   </StrictMode>

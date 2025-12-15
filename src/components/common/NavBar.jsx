@@ -5,10 +5,13 @@ import { GiHamburgerMenu } from "react-icons/gi";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { useState } from "react";
 import { useTheme } from "../../hooks/useTheme";
+import useAuth from "../../hooks/useAuth";
+import { useNavigate } from "react-router";
 
 export default function NavBar() {
   const [openMenu, setOpenMenu] = useState(false);
-  const user = false;
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const { theme } = useTheme();
 
   const navItems = [
@@ -105,8 +108,11 @@ export default function NavBar() {
               >
                 <div className="w-10 rounded-full">
                   <img
-                    alt="Tailwind CSS Navbar component"
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                    alt="User avatar"
+                    src={
+                      user?.profileImage ||
+                      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                    }
                   />
                 </div>
               </div>
@@ -121,7 +127,15 @@ export default function NavBar() {
                   <a>Settings</a>
                 </li>
                 <li>
-                  <a>Logout</a>
+                  <button
+                    className="w-full text-left"
+                    onClick={() => {
+                      logout();
+                      navigate("/");
+                    }}
+                  >
+                    Logout
+                  </button>
                 </li>
               </ul>
             </div>
