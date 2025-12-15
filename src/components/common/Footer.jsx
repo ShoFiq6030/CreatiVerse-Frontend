@@ -17,7 +17,7 @@ export default function Footer() {
   const { theme } = useTheme();
   return (
     <footer
-      className={`${theme === "dark" ? " text-neutral-content" : ""}`}
+      className={`${theme === "dark" ? " text-neutral-content" : ""} border-t border-t-gray-600`}
     >
       <div className="container mx-auto px-6 py-16 flex justify-between gap-10">
         {/* About Company */}

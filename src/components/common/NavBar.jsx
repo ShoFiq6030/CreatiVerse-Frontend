@@ -19,7 +19,7 @@ export default function NavBar() {
 
     // show ONLY when NOT logged in
     { name: "Login", path: "/login", authOnly: true },
-    { name: "Register", path: "/register", authOnly: true },
+    { name: "Register", path: "/registration", authOnly: true },
     // show ONLY when logged in
     { name: "My Properties", path: "/my-properties", private: true },
     { name: "My Ratings", path: "/my-ratings", private: true },

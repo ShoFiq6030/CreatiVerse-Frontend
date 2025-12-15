@@ -5,12 +5,15 @@ import "./index.css";
 import router from "./router/Router.jsx";
 import { ThemeProvider } from "./context/ThemeContest.jsx";
 import QueryProvider from "./provider/QueryProvider.jsx";
+import ToastProvider from "./provider/ToastProvider";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ThemeProvider>
       <QueryProvider>
-        <RouterProvider router={router} />
+        <ToastProvider>
+          <RouterProvider router={router} />
+        </ToastProvider>
       </QueryProvider>
     </ThemeProvider>
   </StrictMode>
