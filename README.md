@@ -14,3 +14,15 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+---
+
+## Banner (Hero) Section — Added
+
+✅ Replaced the old `Hero` / `HeroSlider` with a new **Banner Section** located at `src/components/home/Hero.jsx`.
+
+- Large, attractive banner with a search bar.
+- Search queries `GET /get-contests` using query params `search` and `type`.
+- Results are previewed under the banner using `ContestCard` components, and you can click "See all results" to go to `/all-contest` with the same query params.
+
+Usage note: The search uses the existing `axiosSecure` instance (base URL from `VITE_API_BASE_URL`).

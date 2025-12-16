@@ -5,6 +5,7 @@ import NotFound from "../pages/NotFound";
 import Login from "../components/loginRegistration/Login";
 import Registration from "../components/loginRegistration/Registration";
 import EmailVerify from "../components/loginRegistration/EmailVerify";
+import AllContest from "../pages/AllContest";
 
 let router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ let router = createBrowserRouter([
         path: "/",
         index: true,
         element: <Home />,
+      },
+      {
+        path: "/all-contest",
+        element: <AllContest />,
       },
       {
         path: "/login",
