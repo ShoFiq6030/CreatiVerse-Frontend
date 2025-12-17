@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { IoSearch } from "react-icons/io5";
+
 import { useSearchParams } from "react-router";
 import axiosSecure from "../api/axiosSecure";
 import ContestCard from "../components/common/ContestCard";
@@ -26,7 +28,7 @@ export default function AllContest() {
   // debounce function for search
   const debouncedSearch = useDebounce(searchInput, 1000);
 
-  // console.log(debouncedSearch);
+  console.log(type);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["contests", debouncedSearch, type, sort, page, limit],
@@ -166,7 +168,7 @@ export default function AllContest() {
         {/* search text input form  */}
         <form
           onSubmit={onSubmitSearch}
-          className="flex items-center gap-3 flex-1"
+          className="flex items-center gap-3 flex-1 relative"
         >
           <input
             className="flex-1 border rounded-full px-4 py-2"
@@ -175,12 +177,16 @@ export default function AllContest() {
             onChange={handleSearch}
             aria-label="Search contests"
           />
-          <button
+          <div className="absolute right-3">
+            <IoSearch size={25} />
+          </div>
+
+          {/* <button
             className="bg-purple-600 text-white rounded-full px-4 py-2"
             type="submit"
           >
             Search
-          </button>
+          </button> */}
         </form>
       </div>
 
@@ -278,13 +284,17 @@ export default function AllContest() {
           className="flex items-center justify-center"
           onClick={handleSeeAll}
         >
-          <button className="  my-10 "> <p className="text-sm ">
-          <span className="font-bold text-xl">{data?.total}</span> contests
-          found
-        </p><span className="underline hover:cursor-pointer">Sell All...</span></button>
+          <button className="  my-10 ">
+            {" "}
+            <p className="text-sm ">
+              <span className="font-bold text-xl">{data?.total}</span> contests
+              found
+            </p>
+            <span className="underline hover:cursor-pointer">Sell All...</span>
+          </button>
         </div>
       )}
-      
+
       {data?.total > 0 && (
         <div className="mt-6 flex items-center justify-center gap-3">
           <button
