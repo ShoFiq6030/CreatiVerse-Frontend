@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axiosSecure from "../../api/axiosSecure";
 import Loading from "../common/Loading";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useToast } from "../../provider/ToastProvider";
 import useAuth from "../../hooks/useAuth";
 
@@ -11,12 +11,13 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { success, error: showError } = useToast();
-  const { setUser,googleSignin } = useAuth();
+  const { login, googleSignin, setUser } = useAuth();
   const [socialLoading, setSocialLoading] = useState(false);
 
-   const handleGoogleSignin = async () => {
+  const handleGoogleSignin = async () => {
     setSocialLoading(true);
     setError(null);
     try {
@@ -29,20 +30,17 @@ export default function Login() {
       // console.log(idToken);
 
       // Send it to your backend for verification + DB entry
-      const res = await axiosSecure.post(
-        `/auth/google-login`,
-        {
-          firebaseToken: idToken,
-        }
-      );
+      const res = await axiosSecure.post(`/auth/google-login`, {
+        firebaseToken: idToken,
+      });
 
       // Backend returns your app's token and user data
-      // console.log(res);
-
-      localStorage.setItem("token", res.data.accessToken);
-      setUser(res.data.user);
+      // merge accessToken into the user object so AuthContext persists it
+      setUser(res?.data?.user);
+      const token = res?.data?.accessToken;
+      localStorage.setItem("token", token);
       success("google login successful ");
-       navigate("/");
+      navigate(location.state || "/");
       // console.log("Google login successful:", res.data);
     } catch (err) {
       console.error("Google login error:", err);
@@ -60,6 +58,7 @@ export default function Login() {
     if (!password) return "Enter your password";
     return null;
   };
+  // console.log(location);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -73,11 +72,15 @@ export default function Login() {
     setLoading(true);
     try {
       const res = await axiosSecure.post("/auth/login", { email, password });
+      console.log(res);
       if (res?.data?.success) {
         success("Logged in successfully");
-        const userData = res?.data?.user || res?.data?.data || null;
-        if (userData) setUser(userData);
-        navigate("/");
+        const userData = res?.data?.data?.user;
+        const token = res?.data?.data?.accessToken;
+        // console.log(userData, token);
+        login(userData, token);
+
+        navigate(location.state || "/");
       } else {
         setError(res?.data?.message || "Login failed");
         showError(res?.data?.message || "Login failed");

@@ -7,10 +7,11 @@ import { useState } from "react";
 import { useTheme } from "../../hooks/useTheme";
 import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router";
+import Loading from "./Loading";
 
 export default function NavBar() {
   const [openMenu, setOpenMenu] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, authLoading, logout } = useAuth();
   const navigate = useNavigate();
   const { theme } = useTheme();
 
@@ -24,11 +25,19 @@ export default function NavBar() {
     { name: "Login", path: "/login", authOnly: true },
     { name: "Register", path: "/registration", authOnly: true },
     // show ONLY when logged in
-    { name: "My Properties", path: "/my-properties", private: true },
-    { name: "My Ratings", path: "/my-ratings", private: true },
+    // { name: "Contest", path: "/my-contest", private: true },
+    // { name: "My Ratings", path: "/my-ratings", private: true },
   ];
   const handleMenu = () => {
     setOpenMenu(!openMenu);
+  };
+  console.log(user);
+
+  const navigateTo = () => {
+    if (user?.role === "admin") return `/auth/profile/admin/${user?._id}`;
+    if (user?.role === "creator") return `/auth/profile/creator/${user?._id}`;
+    if (user?.role === "user") return `/auth/profile/user/${user?._id}`;
+    return "/";
   };
 
   return (
@@ -98,48 +107,54 @@ export default function NavBar() {
           <div className="dropdown dropdown-end px-5">
             <ThemeToggle />
           </div>
-
-          {user && (
-            <div className="dropdown dropdown-end">
-              <div
-                tabIndex={0}
-                role="button"
-                className="btn btn-ghost btn-circle avatar"
-              >
-                <div className="w-10 rounded-full">
-                  <img
-                    alt="User avatar"
-                    src={
-                      user?.profileImage ||
-                      "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-                    }
-                  />
+          {authLoading ? (
+            <Loading />
+          ) : (
+            user && (
+              <div className="dropdown dropdown-end">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-ghost btn-circle avatar"
+                >
+                  <div className="w-10 rounded-full">
+                    <img
+                      alt="User avatar"
+                      src={
+                        user?.profileImage ||
+                        "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                      }
+                    />
+                  </div>
                 </div>
+                <ul
+                  tabIndex="-1"
+                  className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                >
+                  <li>
+                    <Link to={navigateTo()} className="justify-between">
+                      Profile
+                    </Link>
+                  </li>
+                  <li>
+                    <a>Settings</a>
+                  </li>
+                  <li>
+                    <button
+                      className="w-full text-left"
+                      onClick={() => {
+                        logout();
+                        navigate("/");
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </li>
+                </ul>
               </div>
-              <ul
-                tabIndex="-1"
-                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
-              >
-                <li>
-                  <a className="justify-between">Profile</a>
-                </li>
-                <li>
-                  <a>Settings</a>
-                </li>
-                <li>
-                  <button
-                    className="w-full text-left"
-                    onClick={() => {
-                      logout();
-                      navigate("/");
-                    }}
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ul>
-            </div>
+            )
           )}
+
           <div className="md:hidden" onClick={handleMenu}>
             {openMenu ? (
               <RiCloseLargeLine size={32} />

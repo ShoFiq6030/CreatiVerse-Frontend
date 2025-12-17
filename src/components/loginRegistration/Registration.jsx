@@ -78,7 +78,7 @@ export default function Registration() {
       setLoading(false);
     }
   };
-  const handleGoogleSignin = async () => {
+   const handleGoogleSignin = async () => {
     setSocialLoading(true);
     setError(null);
     try {
@@ -96,12 +96,12 @@ export default function Registration() {
       });
 
       // Backend returns your app's token and user data
-      // console.log(res);
-
-      localStorage.setItem("token", res.data.accessToken);
-      setUser(res.data.user);
+      // merge accessToken into the user object so AuthContext persists it
+      setUser(res?.data?.user);
+      const token =res?.data?.accessToken
+      localStorage.setItem("token",token)
       success("google login successful ");
-      navigate("/");
+      navigate(location.state || "/");
       // console.log("Google login successful:", res.data);
     } catch (err) {
       console.error("Google login error:", err);

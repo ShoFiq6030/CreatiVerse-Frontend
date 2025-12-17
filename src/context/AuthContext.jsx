@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useEffect, useState } from "react";
 import axiosSecure from "../api/axiosSecure";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
@@ -10,25 +9,35 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    try {
-      const raw = localStorage.getItem("token");
-      return raw ? JSON.parse(raw) : null;
-    } catch {
-      return null;
-    }
-  });
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
 
+  // On mount → check localStorage token
   useEffect(() => {
-    try {
-      if (user) localStorage.setItem("token", user.accessToken);
-      else localStorage.removeItem("token");
-    } catch (e) {
-      console.log(e);
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchUserProfile(token);
+    } else {
+      setAuthLoading(false);
     }
-  }, [user]);
+  }, []);
 
-  const login = (userData) => {
+  const fetchUserProfile = async (token) => {
+    try {
+      const res = await axiosSecure.get(`/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(res.data.data);
+    } catch (err) {
+      console.error("Failed to fetch user profile:", err);
+      logout();
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const login = (userData, token) => {
+    localStorage.setItem("token", token);
     setUser(userData || null);
   };
 
@@ -38,9 +47,15 @@ export function AuthProvider({ children }) {
   };
 
   const logout = async () => {
+    const token = localStorage.getItem("token");
     try {
+      localStorage.removeItem("token");
       // notify server if endpoint exists
-      await axiosSecure.post("/auth/logout");
+      await axiosSecure.post("/auth/logout", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      localStorage.removeItem("token");
+      setUser(null);
     } catch (e) {
       console.log(e);
     }
@@ -49,7 +64,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, setUser: login, logout, googleSignin }}
+      value={{ user, setUser, login, logout, googleSignin, authLoading }}
     >
       {children}
     </AuthContext.Provider>
