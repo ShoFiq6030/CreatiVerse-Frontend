@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { FiClock } from "react-icons/fi";
 import { FaDollarSign, FaTrophy, FaUsers } from "react-icons/fa";
 import { Link } from "react-router";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function ContestCard({ contest }) {
   const [timeLeft, setTimeLeft] = useState("");
+  const { theme } = useTheme();
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -32,52 +34,87 @@ export default function ContestCard({ contest }) {
     return () => clearInterval(timer);
   }, [contest.deadline]);
 
+  // Helper to format `createdAt` to a readable date/time
+  const formatPublished = (iso) => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    return d.toLocaleString();
+  };
+
+  const cardBg =
+    theme === "dark" ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800";
+  const metaText = theme === "dark" ? "text-gray-300" : "text-gray-600";
+  const mutedBg = theme === "dark" ? "bg-gray-700/50" : "bg-white/70";
+
   return (
-    <Link
-      to={`/contest/${contest._id}`}
-      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition hover:scale-105"
+    <div
+      className={`rounded-lg shadow-md overflow-hidden transition transform hover:shadow-lg hover:scale-105 ${cardBg}`}
     >
-      <img
-        src={
-          contest.image || "https://via.placeholder.com/400x300?text=No+Image"
-        }
-        alt={contest.contestName}
-        className="w-full h-48 object-cover"
-      />
-      <div className="p-4">
-        <h3 className="text-lg font-semibold mb-3">{contest.contestName}</h3>
-        <div className="space-y-2 text-sm">
-          <p className="text-red-500 font-semibold flex items-center gap-2">
-            <FiClock aria-hidden className="text-lg" />
-            <span> {timeLeft}</span>
-          </p>
-          <p className="text-gray-600 flex items-center gap-2">
-            <FaDollarSign className="text-sm text-gray-700" aria-hidden />
-            <span>
-              Entry Fee:{" "}
-              <strong className="font-semibold">${contest.price}</strong>
-            </span>
-          </p>
-          <p className="text-gray-600 flex items-center gap-2">
-            <FaTrophy className="text-sm text-green-600" aria-hidden />
-            <span>
-              Prize Money:{" "}
-              <strong className="font-semibold text-green-600">
-                ${contest.prizeMoney}
-              </strong>
-            </span>
-          </p>
-          <p className="text-gray-600 flex items-center gap-2">
-            <FaUsers className="text-sm" aria-hidden />
-            <span>
-              Participants:{" "}
-              <strong className="font-semibold">
-                {contest.participantsCount}
-              </strong>
-            </span>
-          </p>
+      <div className="relative">
+        <img
+          src={
+            contest.image || "https://via.placeholder.com/400x300?text=No+Image"
+          }
+          alt={contest.contestName}
+          className="w-full h-48 object-cover"
+        />
+        <div
+          className={`absolute top-3 left-3 px-2 py-1 rounded ${mutedBg} ${metaText} text-xs font-medium`}
+        >
+          <FiClock aria-hidden className="inline mr-1" />
+          <span>{timeLeft}</span>
+        </div>
+        <div
+          className={`absolute top-3 right-3 px-2 py-1 rounded ${mutedBg} ${metaText} text-xs font-medium`}
+        >
+          <FaUsers aria-hidden className="inline mr-1" />
+          <span>{contest.participantsCount}</span>
         </div>
       </div>
-    </Link>
+
+      <div className="p-4">
+        <h3 className="text-lg font-semibold mb-2">{contest.contestName}</h3>
+
+        <p className={`text-sm mb-3 ${metaText}`}>
+          {contest.description
+            ? contest.description.slice(0, 120) +
+              (contest.description.length > 120 ? "…" : "")
+            : "No description available."}
+        </p>
+
+        <div className="flex items-center justify-between gap-4">
+          <div className="space-y-1 text-sm">
+            <p className={`flex items-center gap-2 ${metaText}`}>
+              <FaDollarSign className="text-sm" aria-hidden />
+              <span>
+                Entry Fee:{" "}
+                <strong className="font-semibold">${contest.price}</strong>
+              </span>
+            </p>
+            <p className={`flex items-center gap-2 ${metaText}`}>
+              <FaTrophy className="text-sm text-green-500" aria-hidden />
+              <span>
+                Prize:{" "}
+                <strong className="font-semibold text-green-500">
+                  ${contest.prizeMoney}
+                </strong>
+              </span>
+            </p>
+            <p className={`text-xs ${metaText}`}>
+              Published {formatPublished(contest.createdAt)}
+            </p>
+          </div>
+
+          <div className="ml-auto">
+            <Link
+              to={`/contest/${contest._id}`}
+              className="inline-block px-3 py-2 rounded-md bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition"
+            >
+              Details
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

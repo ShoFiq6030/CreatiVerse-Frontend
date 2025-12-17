@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IoSearch } from "react-icons/io5";
 
 import { useSearchParams } from "react-router";
@@ -8,11 +8,13 @@ import { categories } from "../constants/categories";
 import Loading from "../components/common/Loading";
 import { useQuery } from "@tanstack/react-query";
 import useDebounce from "../hooks/useDebounce";
+import { useTheme } from "../hooks/useTheme";
 
 export default function AllContest() {
   const [searchParams] = useSearchParams();
   //   const location = useLocation();
   //   const navigate = useNavigate();
+  const { theme } = useTheme();
 
   const initialSearch = searchParams.get("search");
   const initialType = searchParams.get("type");
@@ -126,7 +128,11 @@ export default function AllContest() {
               setType(e.target.value);
               setPage(1);
             }}
-            className="border rounded-full px-3 py-2"
+            className={`rounded-full px-3 py-2 border ${
+              theme === "dark"
+                ? "bg-gray-700 text-gray-100 border-gray-600"
+                : "bg-white text-gray-800 border-gray-300"
+            }`}
           >
             {categories.map((c) => (
               <option key={c.value} value={c.value}>
@@ -141,7 +147,11 @@ export default function AllContest() {
               setSort(e.target.value);
               setPage(1);
             }}
-            className="border rounded-full px-3 py-2"
+            className={`rounded-full px-3 py-2 border ${
+              theme === "dark"
+                ? "bg-gray-700 text-gray-100 border-gray-600"
+                : "bg-white text-gray-800 border-gray-300"
+            }`}
           >
             {sortOptions.map((s) => (
               <option key={s.value} value={s.value}>
@@ -171,7 +181,11 @@ export default function AllContest() {
           className="flex items-center gap-3 flex-1 relative"
         >
           <input
-            className="flex-1 border rounded-full px-4 py-2"
+            className={`flex-1 rounded-full px-4 py-2 border ${
+              theme === "dark"
+                ? "bg-gray-700 text-gray-100 border-gray-600 placeholder-gray-400"
+                : "bg-white text-gray-800 border-gray-300 placeholder-gray-500"
+            }`}
             placeholder="Search contests"
             value={searchInput}
             onChange={handleSearch}
