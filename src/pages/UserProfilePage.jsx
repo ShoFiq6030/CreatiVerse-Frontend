@@ -9,6 +9,7 @@ import ProfileTabs from "../components/userProfile/ProfileTabs";
 import EditProfileForm from "../components/userProfile/EditProfileForm";
 import ContestCard from "../components/common/ContestCard";
 import Loading from "../components/common/Loading";
+import ModalWrapper from "../components/common/ModalWrapper";
 
 export default function UserProfilePage() {
   const { theme } = useTheme();
@@ -43,7 +44,24 @@ export default function UserProfilePage() {
 
   return (
     <div className={`container mx-auto px-6 py-10 ${wrapperBg}`}>
-      <ProfileHeader user={data} onEdit={() => setEditing(true)} />
+      {editing && (
+        <ModalWrapper
+          title={"Profile Edit Form"}
+          isOpen={true}
+          onClose={() => setEditing(false)}
+        >
+          <EditProfileForm user={data} onClose={() => setEditing(false)} />
+        </ModalWrapper>
+        // <div className="text-5xl text-red-500">Edit.......</div>
+      )}
+      <ProfileHeader
+        user={data}
+        onEdit={() => {
+          console.log("edit click");
+          console.log(editing);
+          setEditing(true);
+        }}
+      />
 
       <div className="grid md:grid-cols-3 gap-6 mb-6">
         <div className="md:col-span-2">
@@ -87,28 +105,21 @@ export default function UserProfilePage() {
                   )}
                 </div>
               ),
-              settings: (
-                <div className="max-w-xl">
-                  {editing ? (
-                    <EditProfileForm
-                      user={data}
-                      onClose={() => setEditing(false)}
-                    />
-                  ) : (
-                    <div>
-                      <p className="mb-2">Name: {data?.name || "-"}</p>
-                      <p className="mb-2">Email: {data?.email || "-"}</p>
-                      <p className="mb-2">Role: {data?.role || "-"}</p>
-                      <button
-                        className="btn mt-3"
-                        onClick={() => setEditing(true)}
-                      >
-                        Edit
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ),
+              // settings: (
+              //   <div className="max-w-xl">
+              //     <div>
+              //       <p className="mb-2">Name: {data?.name || "-"}</p>
+              //       <p className="mb-2">Email: {data?.email || "-"}</p>
+              //       <p className="mb-2">Role: {data?.role || "-"}</p>
+              //       <button
+              //         className="btn mt-3"
+              //         onClick={() => setEditing(true)}
+              //       >
+              //         Edit
+              //       </button>
+              //     </div>
+              //   </div>
+              // ),
             }}
           />
         </div>

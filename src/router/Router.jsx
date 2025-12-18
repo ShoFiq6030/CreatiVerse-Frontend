@@ -9,7 +9,6 @@ import AllContest from "../pages/AllContest";
 import ContestDetails from "../pages/ContestDetails";
 import About from "../pages/About";
 import PrivateRoute from "../PrivateRoutes/PrivateRoute";
-import UserProfile from "../pages/UserProfile";
 import AdminProfile from "../pages/AdminProfile";
 import CreatorProfile from "../pages/CreatorProfile";
 import UserProfilePage from "../pages/UserProfilePage";

@@ -7,6 +7,7 @@ import ProfileHeader from "../components/userProfile/ProfileHeader";
 import ProfileStats from "../components/userProfile/ProfileStats";
 import ProfileTabs from "../components/userProfile/ProfileTabs";
 import EditProfileForm from "../components/userProfile/EditProfileForm";
+import ModalWrapper from "../components/common/ModalWrapper";
 import ContestCard from "../components/common/ContestCard";
 import Loading from "../components/common/Loading";
 
@@ -50,6 +51,14 @@ export default function AdminProfile() {
       </div>
       
       <ProfileHeader user={data} onEdit={() => setEditing(true)} />
+
+      <ModalWrapper
+        isOpen={editing}
+        title="Edit Profile"
+        onClose={() => setEditing(false)}
+      >
+        <EditProfileForm user={data} onClose={() => setEditing(false)} />
+      </ModalWrapper>
 
       <div className="grid md:grid-cols-3 gap-6 mb-6">
         <div className="md:col-span-2">
@@ -95,24 +104,17 @@ export default function AdminProfile() {
               ),
               settings: (
                 <div className="max-w-xl">
-                  {editing ? (
-                    <EditProfileForm
-                      user={data}
-                      onClose={() => setEditing(false)}
-                    />
-                  ) : (
-                    <div>
-                      <p className="mb-2">Name: {data?.name || "-"}</p>
-                      <p className="mb-2">Email: {data?.email || "-"}</p>
-                      <p className="mb-2">Role: {data?.role || "-"}</p>
-                      <button
-                        className="btn mt-3"
-                        onClick={() => setEditing(true)}
-                      >
-                        Edit
-                      </button>
-                    </div>
-                  )}
+                  <div>
+                    <p className="mb-2">Name: {data?.name || "-"}</p>
+                    <p className="mb-2">Email: {data?.email || "-"}</p>
+                    <p className="mb-2">Role: {data?.role || "-"}</p>
+                    <button
+                      className="btn mt-3"
+                      onClick={() => setEditing(true)}
+                    >
+                      Edit
+                    </button>
+                  </div>
                 </div>
               ),
             }}

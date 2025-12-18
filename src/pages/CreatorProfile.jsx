@@ -7,6 +7,7 @@ import ProfileHeader from "../components/userProfile/ProfileHeader";
 import ProfileStats from "../components/userProfile/ProfileStats";
 import ProfileTabs from "../components/userProfile/ProfileTabs";
 import EditProfileForm from "../components/userProfile/EditProfileForm";
+import ModalWrapper from "../components/common/ModalWrapper";
 import ContestCard from "../components/common/ContestCard";
 import Loading from "../components/common/Loading";
 
@@ -50,6 +51,14 @@ export default function CreatorProfile() {
       </div>
       
       <ProfileHeader user={data} onEdit={() => setEditing(true)} />
+
+      <ModalWrapper
+        isOpen={editing}
+        title="Edit Profile"
+        onClose={() => setEditing(false)}
+      >
+        <EditProfileForm user={data} onClose={() => setEditing(false)} />
+      </ModalWrapper>
 
       <div className="grid md:grid-cols-3 gap-6 mb-6">
         <div className="md:col-span-2">

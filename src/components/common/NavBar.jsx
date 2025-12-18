@@ -22,8 +22,13 @@ export default function NavBar() {
     { name: "About", path: "/about" },
 
     // show ONLY when NOT logged in
-    { name: "Login", path: "/login", authOnly: true },
-    { name: "Register", path: "/registration", authOnly: true },
+    { name: "Login", path: "/login", authOnly: true, loading: authLoading },
+    {
+      name: "Register",
+      path: "/registration",
+      authOnly: true,
+      loading: authLoading,
+    },
     // show ONLY when logged in
     // { name: "Contest", path: "/my-contest", private: true },
     // { name: "My Ratings", path: "/my-ratings", private: true },
@@ -54,6 +59,7 @@ export default function NavBar() {
             {navItems.map((item, i) => {
               if (item.authOnly && user) return null;
               if (item.private && !user) return null;
+              if (item.loading && !user) return null;
               return (
                 <NavLink
                   key={i}
@@ -83,6 +89,8 @@ export default function NavBar() {
               {navItems.map((item, i) => {
                 if (item.authOnly && user) return null;
                 if (item.private && !user) return null;
+                if (item.loading && !user) return null;
+
                 return (
                   <NavLink
                     key={i}
