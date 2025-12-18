@@ -26,14 +26,14 @@ export default function ProfileTabs({ children }) {
         >
           My Submissions
         </button>
-        <button
+        {/* <button
           className={`px-3 py-2 rounded ${
             tab === "settings" ? active : "border"
           }`}
           onClick={() => setTab("settings")}
         >
           Settings
-        </button>
+        </button> */}
       </div>
 
       <div>

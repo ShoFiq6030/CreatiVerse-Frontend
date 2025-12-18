@@ -6,21 +6,44 @@ import Loading from "../components/common/Loading";
 import { FiClock } from "react-icons/fi";
 import { FaDollarSign, FaTrophy, FaUsers } from "react-icons/fa";
 import { useTheme } from "../hooks/useTheme";
+import ContestSubmissionForm from "../components/ContestDetailsPage/ContestSubmissionForm";
+import ModalWrapper from "../components/common/ModalWrapper";
+import useAuth from "./../hooks/useAuth";
+import ParticipationCard from "../components/ContestDetailsPage/ParticipationCard";
 
 export default function ContestDetails() {
   const { contestId } = useParams();
   const { theme } = useTheme();
   const [timeLeft, setTimeLeft] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const { user } = useAuth();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["contest", contestId],
     queryFn: async () => {
       const res = await axiosSecure.get(`/contest/get-contest/${contestId}`);
-      
+
       return res.data.data;
     },
     enabled: !!contestId,
   });
+
+  const { data: submissionData, refetch: submissionDataRefetch } = useQuery({
+    queryKey: ["submission", contestId],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/submissions/${contestId}`);
+
+      return res.data.data;
+    },
+    enabled: !!contestId,
+  });
+
+  const userAlreadyParticipate = () => {
+    const found = submissionData?.find(
+      (submission) => submission.userId === user._id
+    );
+    return !!found;
+  };
 
   useEffect(() => {
     if (!data) return;
@@ -54,6 +77,9 @@ export default function ContestDetails() {
   if (error) return <p className="text-red-500">Error loading contest.</p>;
 
   const contest = data;
+
+  // console.log(user._id);
+  // console.log(contest.creator);
   const cardBg =
     theme === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800";
   const metaText = theme === "dark" ? "text-gray-300" : "text-gray-600";
@@ -61,6 +87,19 @@ export default function ContestDetails() {
   return (
     <div className={`container mx-auto px-6 py-10`}>
       <div className={`rounded-lg overflow-hidden shadow ${cardBg}`}>
+        {openModal && (
+          <ModalWrapper
+            isOpen={true}
+            title={"Participant Contest"}
+            onClose={() => setOpenModal(false)}
+          >
+            <ContestSubmissionForm
+              onClose={() => setOpenModal(false)}
+              refetch={refetch}
+              submissionDataRefetch={submissionDataRefetch}
+            />
+          </ModalWrapper>
+        )}
         <div className="md:flex">
           <div className="md:w-1/2">
             <img
@@ -105,9 +144,15 @@ export default function ContestDetails() {
             </div>
 
             <div className="flex gap-3">
-              <button className="px-4 py-2 bg-indigo-600 text-white rounded">
-                Enter Contest
-              </button>
+              {user?.role === "user" && !userAlreadyParticipate() && (
+                <button
+                  className="px-4 py-2 bg-indigo-600 text-white rounded cursor-pointer"
+                  onClick={() => setOpenModal(true)}
+                >
+                  Enter Contest
+                </button>
+              )}
+
               <a href="#" className="px-4 py-2 border rounded text-sm">
                 Share
               </a>
@@ -116,6 +161,29 @@ export default function ContestDetails() {
             <p className={`text-xs mt-4 ${metaText}`}>
               Published: {new Date(contest.createdAt).toLocaleString()}
             </p>
+          </div>
+        </div>
+
+        {/* Submissions Section */}
+        <div className="border-t mt-6">
+          <div className="p-6">
+            <h2 className="text-xl font-bold mb-4">Submissions</h2>
+            {submissionData && submissionData.length > 0 ? (
+              <div className="w-full h-100">
+                {submissionData.map((submission) => (
+                  <ParticipationCard
+                    key={submission._id}
+                    submission={submission}
+                    currentUserId={user?._id}
+                    contest={contest}
+                  />
+                ))}
+              </div>
+            ) : (
+              <p className={`text-sm ${metaText}`}>
+                No submissions yet. Be the first to participate!
+              </p>
+            )}
           </div>
         </div>
       </div>
