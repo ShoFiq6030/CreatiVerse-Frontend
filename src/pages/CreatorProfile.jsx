@@ -62,12 +62,17 @@ export default function CreatorProfile() {
     );
   }
 
-  const stats = data?.stats || { contests: 0, wins: 0, points: 0 };
   const pendingContest =
     userContest?.contests?.filter((c) => c.status === "pending") || [];
 
   const approvedContest =
-    userContest?.contests?.filter((c) => c.status === "approve") || [];
+    userContest?.contests?.filter((c) => c.status === "approved") || [];
+  const completeContest =
+    userContest?.contests?.filter((c) => c.status === "completed") || [];
+    console.log(completeContest);
+
+      const stats =  { contests: userContest?.contests?.length || 0, approved: approvedContest?.length || 0, completed: completeContest?.length || 0 };
+
 
   return (
     <div className={`container mx-auto px-6 py-10 ${wrapperBg}`}>
@@ -157,28 +162,42 @@ export default function CreatorProfile() {
                   )}
                 </div>
               ),
-              settings: (
-                <div className="max-w-xl">
-                  {editing ? (
-                    <EditProfileForm
-                      user={data}
-                      onClose={() => setEditing(false)}
-                    />
-                  ) : (
-                    <div>
-                      <p className="mb-2">Name: {data?.name || "-"}</p>
-                      <p className="mb-2">Email: {data?.email || "-"}</p>
-                      <p className="mb-2">Role: {data?.role || "-"}</p>
-                      <button
-                        className="btn mt-3"
-                        onClick={() => setEditing(true)}
-                      >
-                        Edit
-                      </button>
+              complete: (
+                <div>
+                  <h3 className="text-lg font-semibold mb-3">Completed Contests</h3>
+                  {completeContest?.length ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {completeContest?.map((s) => ( 
+                        <ContestCard key={s._id} contest={s} />
+                      ))}
                     </div>
+                  ) : ( 
+                    <p>No completed contests yet.</p>
                   )}
                 </div>
               ),
+              // settings: (
+              //   <div className="max-w-xl">
+              //     {editing ? (
+              //       <EditProfileForm
+              //         user={data}
+              //         onClose={() => setEditing(false)}
+              //       />
+              //     ) : (
+              //       <div>
+              //         <p className="mb-2">Name: {data?.name || "-"}</p>
+              //         <p className="mb-2">Email: {data?.email || "-"}</p>
+              //         <p className="mb-2">Role: {data?.role || "-"}</p>
+              //         <button
+              //           className="btn mt-3"
+              //           onClick={() => setEditing(true)}
+              //         >
+              //           Edit
+              //         </button>
+              //       </div>
+              //     )}
+              //   </div>
+              // ),
             }}
           />
         </div>

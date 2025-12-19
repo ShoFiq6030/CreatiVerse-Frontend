@@ -11,6 +11,7 @@ export default function ParticipationCard({
   submission,
   currentUserId,
   contest,
+  isWinner,
 }) {
   const { user } = useAuth();
   const { theme } = useTheme();
@@ -74,7 +75,9 @@ export default function ParticipationCard({
         isCurrentUser
           ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 shadow-lg ring-2 ring-indigo-200 dark:ring-indigo-800"
           : `${borderColor} ${cardBg} ${hoverShadow}`
-      }`}
+      }
+      ${isWinner ? "ring-2 ring-yellow-500" : ""}
+      `}
     >
       {/* User Info Header */}
       <div className="flex items-center justify-between mb-3">
@@ -171,18 +174,21 @@ export default function ParticipationCard({
         >
           <span>Submission ID: {submission._id?.slice(-6)}</span>
           {contest.creator === user._id || user?.role === "admin" ? (
-            <span
+            <button
               onClick={() => handleSubmitWinner(submission)}
-              className={`px-2 py-1 rounded hover:cursor-pointer hover:bg-indigo-500  ${
+              className={`px-2 py-1 rounded   ${
                 theme === "dark"
                   ? "text-indigo-300 bg-indigo-900/50 "
                   : "text-indigo-900 bg-indigo-300"
               }  
+              ${isWinner ? "" : " hover:cursor-pointer hover:bg-indigo-500 "}
+              
                 
             `}
+              disabled={isWinner}
             >
-              Make Winner
-            </span>
+              {isWinner ? "Contest Winner" : "Make Winner"}
+            </button>
           ) : (
             <span
               className={`px-2 py-1 rounded ${

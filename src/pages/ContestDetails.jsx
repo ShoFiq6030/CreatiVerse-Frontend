@@ -78,6 +78,8 @@ export default function ContestDetails() {
 
   const contest = data;
 
+  const winnerSubmissionId = contest?.winner?.submissionId;
+
   // console.log(user._id);
   // console.log(contest.creator);
   const cardBg =
@@ -120,7 +122,8 @@ export default function ContestDetails() {
 
             <div className="flex items-center gap-4 mb-4">
               <div className={`flex items-center gap-2 ${metaText}`}>
-                <FiClock className="text-lg" /> <span>{timeLeft}</span>
+                <FiClock className="text-lg" />{" "}
+                <span>{winnerSubmissionId ? "Time Over" : timeLeft}</span>
               </div>
               <div className={`flex items-center gap-2 ${metaText}`}>
                 <FaUsers className="text-lg" />{" "}
@@ -144,14 +147,16 @@ export default function ContestDetails() {
             </div>
 
             <div className="flex gap-3">
-              {user?.role === "user" && !userAlreadyParticipate() && (
-                <button
-                  className="px-4 py-2 bg-indigo-600 text-white rounded cursor-pointer"
-                  onClick={() => setOpenModal(true)}
-                >
-                  Enter Contest
-                </button>
-              )}
+              {user?.role === "user" &&
+                !userAlreadyParticipate() &&
+                !winnerSubmissionId && (
+                  <button
+                    className="px-4 py-2 bg-indigo-600 text-white rounded cursor-pointer"
+                    onClick={() => setOpenModal(true)}
+                  >
+                    Enter Contest
+                  </button>
+                )}
 
               <a href="#" className="px-4 py-2 border rounded text-sm">
                 Share
@@ -176,6 +181,7 @@ export default function ContestDetails() {
                     submission={submission}
                     currentUserId={user?._id}
                     contest={contest}
+                    isWinner={submission._id === winnerSubmissionId}
                   />
                 ))}
               </div>

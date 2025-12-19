@@ -6,7 +6,7 @@ import Loading from "./../common/Loading";
 
 export default function PopularContest() {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["contests"],
+    queryKey: ["popular-contests"],
     queryFn: async () => {
       const res = await axiosSecure.get("/contest/get-popular-contests");
       return res.data.data;
