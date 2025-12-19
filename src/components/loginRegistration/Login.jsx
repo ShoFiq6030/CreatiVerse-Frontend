@@ -16,6 +16,7 @@ export default function Login() {
   const { success, error: showError } = useToast();
   const { login, googleSignin, setUser } = useAuth();
   const [socialLoading, setSocialLoading] = useState(false);
+  const destination = location.state?.from?.pathname || "/";
 
   const handleGoogleSignin = async () => {
     setSocialLoading(true);
@@ -80,7 +81,7 @@ export default function Login() {
         // console.log(userData, token);
         login(userData, token);
 
-        navigate(location.state || "/");
+        navigate(destination);
       } else {
         setError(res?.data?.message || "Login failed");
         showError(res?.data?.message || "Login failed");

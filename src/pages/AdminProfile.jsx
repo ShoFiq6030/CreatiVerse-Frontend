@@ -19,7 +19,7 @@ export default function AdminProfile() {
   const [contestModalOpen, setContestModalOpen] = useState(false);
   const [selectedContest, setSelectedContest] = useState(null);
   const { userId } = useParams();
-  const {user}= useAuth()
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   const wrapperBg =
@@ -32,16 +32,16 @@ export default function AdminProfile() {
       return res.data.data;
     },
   });
-    const {
-    data: userContest,
-  } = useQuery({
-    queryKey: ["contests", userId],
+
+  const { data: userContest, refetch: refetchContests } = useQuery({
+    queryKey: ["contests"],
     queryFn: async () => {
       const res = await axiosSecure.get(`contest/get-contests-auth`);
       return res.data.data;
     },
   });
-  if(user.role !== "admin"){
+  console.log(userContest);
+  if (user.role !== "admin") {
     return (
       <div className="container mx-auto px-6 py-10 text-red-500">
         Access Denied. You do not have permission to view this page.
@@ -60,6 +60,7 @@ export default function AdminProfile() {
       </div>
     );
   }
+  refetchContests();
 
   const stats = data?.stats || { contests: 0, wins: 0, points: 0 };
   const pendingContest =
@@ -75,7 +76,7 @@ export default function AdminProfile() {
           Admin
         </span>
       </div>
-      
+
       <ProfileHeader user={data} onEdit={() => setEditing(true)} />
 
       <ModalWrapper
@@ -95,6 +96,7 @@ export default function AdminProfile() {
         }}
       >
         <UpdateCreateContestForm
+          refetchContests={refetchContests}
           contest={selectedContest}
           userRole={user?.role}
           onClose={() => {
@@ -124,9 +126,9 @@ export default function AdminProfile() {
                     {pendingContest.length ? (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {pendingContest.map((s) => (
-                          <ContestCard 
-                            key={s._id} 
-                            contest={s} 
+                          <ContestCard
+                            key={s._id}
+                            contest={s}
                             onEdit={(contest) => {
                               setSelectedContest(contest);
                               setContestModalOpen(true);
@@ -135,9 +137,7 @@ export default function AdminProfile() {
                         ))}
                       </div>
                     ) : (
-                      <p className="text-sm">
-                        No pending contests.
-                      </p>
+                      <p className="text-sm">No pending contests.</p>
                     )}
                   </div>
                 </div>
@@ -148,9 +148,9 @@ export default function AdminProfile() {
                   {approvedContest.length ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {approvedContest.map((s) => (
-                        <ContestCard 
-                          key={s._id} 
-                          contest={s} 
+                        <ContestCard
+                          key={s._id}
+                          contest={s}
                           onEdit={(contest) => {
                             setSelectedContest(contest);
                             setContestModalOpen(true);
@@ -190,11 +190,11 @@ export default function AdminProfile() {
               <h4 className="font-semibold mb-2">About</h4>
               <p className="text-sm">{data?.bio || "No bio yet."}</p>
             </div>
-            
+
             <div className="p-4 rounded-lg shadow">
               <h4 className="font-semibold mb-2">Admin Actions</h4>
               <button className="btn w-full mb-2">Manage Users</button>
-              <button 
+              <button
                 className="btn w-full mb-2"
                 onClick={() => setContestModalOpen(true)}
               >

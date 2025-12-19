@@ -4,11 +4,12 @@ import axiosSecure from "../../api/axiosSecure";
 import { categories } from "../../constants/categories";
 import { photoUploadToCloudinary } from "../../utils/imgUploadToCloudinary";
 
-export default function UpdateCreateContestForm({ 
-  contest = null, 
-  onClose, 
+export default function UpdateCreateContestForm({
+  contest = null,
+  onClose,
   onSuccess,
-  userRole = "creator"
+  userRole = "creator",
+  refetchContests,
 }) {
   const [formData, setFormData] = useState({
     contestName: "",
@@ -18,7 +19,7 @@ export default function UpdateCreateContestForm({
     price: "",
     prizeMoney: "",
     contestType: "",
-    deadline: ""
+    deadline: "",
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(contest?.image || "");
@@ -38,7 +39,7 @@ export default function UpdateCreateContestForm({
         price: contest.price || "",
         prizeMoney: contest.prizeMoney || "",
         contestType: contest.contestType || "",
-        deadline: contest.deadline ? contest.deadline.split("T")[0] : ""
+        deadline: contest.deadline ? contest.deadline.split("T")[0] : "",
       });
       setStatus(contest.status || "pending");
     } else {
@@ -51,7 +52,7 @@ export default function UpdateCreateContestForm({
         price: "",
         prizeMoney: "",
         contestType: "",
-        deadline: ""
+        deadline: "",
       });
       setStatus("pending");
     }
@@ -59,51 +60,51 @@ export default function UpdateCreateContestForm({
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ""
+        [name]: "",
       }));
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.contestName.trim()) {
       newErrors.contestName = "Contest name is required";
     }
-    
+
     if (!formData.image.trim() && !imageFile) {
       newErrors.image = "Image is required";
     }
-    
+
     if (!formData.description.trim()) {
       newErrors.description = "Description is required";
     }
-    
+
     if (!formData.taskInstruction.trim()) {
       newErrors.taskInstruction = "Task instruction is required";
     }
-    
+
     if (!formData.price || formData.price < 0) {
       newErrors.price = "Valid entry fee is required";
     }
-    
+
     if (!formData.prizeMoney || formData.prizeMoney < 0) {
       newErrors.prizeMoney = "Valid prize money is required";
     }
-    
+
     if (!formData.contestType) {
       newErrors.contestType = "Contest type is required";
     }
-    
+
     if (!formData.deadline) {
       newErrors.deadline = "Deadline is required";
     } else {
@@ -113,23 +114,23 @@ export default function UpdateCreateContestForm({
         newErrors.deadline = "Deadline must be in the future";
       }
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
 
     setLoading(true);
-    
+
     try {
       let imageUrl = formData.image;
-      
+
       // Upload image to Cloudinary if a file is selected
       if (imageFile) {
         imageUrl = await photoUploadToCloudinary(imageFile);
@@ -140,19 +141,26 @@ export default function UpdateCreateContestForm({
         image: imageUrl,
         price: Number(formData.price),
         prizeMoney: Number(formData.prizeMoney),
-        deadline: new Date(formData.deadline).toISOString()
+        deadline: new Date(formData.deadline).toISOString(),
+        status,
       };
+      console.log(payload);
 
       if (contest) {
         // Update existing contest
-        await axiosSecure.put(`/contest/update-contest/${contest._id}`, payload);
+        await axiosSecure.patch(
+          `/contest/update-contest/${contest._id}`,
+          payload
+        );
+        refetchContests();
         success("Contest updated successfully");
       } else {
         // Create new contest
         await axiosSecure.post("/contest/create-contest", payload);
+        refetchContests();
         success("Contest created successfully");
       }
-      
+
       onSuccess?.();
       onClose();
     } catch (err) {
@@ -163,8 +171,8 @@ export default function UpdateCreateContestForm({
     }
   };
 
-  const canChangeStatus = userRole === "admin" || 
-    (userRole === "creator" && status === "completed");
+  const canChangeStatus =
+    userRole === "admin" || (userRole === "creator" && status === "completed");
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -176,7 +184,9 @@ export default function UpdateCreateContestForm({
             name="contestName"
             value={formData.contestName}
             onChange={handleChange}
-            className={`input input-bordered w-full ${errors.contestName ? 'input-error' : ''}`}
+            className={`input input-bordered w-full ${
+              errors.contestName ? "input-error" : ""
+            }`}
             placeholder="Enter contest name"
           />
           {errors.contestName && (
@@ -195,15 +205,17 @@ export default function UpdateCreateContestForm({
                 setImageFile(file);
                 setImagePreview(URL.createObjectURL(file));
                 // Clear the image URL field when a file is selected
-                setFormData(prev => ({ ...prev, image: "" }));
+                setFormData((prev) => ({ ...prev, image: "" }));
               }
             }}
-            className={`file-input file-input-bordered w-full ${errors.image ? 'input-error' : ''}`}
+            className={`file-input file-input-bordered w-full ${
+              errors.image ? "input-error" : ""
+            }`}
           />
           {errors.image && (
             <p className="text-red-500 text-sm mt-1">{errors.image}</p>
           )}
-          
+
           {/* Image preview */}
           {(imagePreview || formData.image) && (
             <div className="mt-3">
@@ -226,7 +238,9 @@ export default function UpdateCreateContestForm({
             name="price"
             value={formData.price}
             onChange={handleChange}
-            className={`input input-bordered w-full ${errors.price ? 'input-error' : ''}`}
+            className={`input input-bordered w-full ${
+              errors.price ? "input-error" : ""
+            }`}
             placeholder="0"
             min="0"
             step="0.01"
@@ -243,7 +257,9 @@ export default function UpdateCreateContestForm({
             name="prizeMoney"
             value={formData.prizeMoney}
             onChange={handleChange}
-            className={`input input-bordered w-full ${errors.prizeMoney ? 'input-error' : ''}`}
+            className={`input input-bordered w-full ${
+              errors.prizeMoney ? "input-error" : ""
+            }`}
             placeholder="0"
             min="0"
             step="0.01"
@@ -259,10 +275,12 @@ export default function UpdateCreateContestForm({
             name="contestType"
             value={formData.contestType}
             onChange={handleChange}
-            className={`select select-bordered w-full ${errors.contestType ? 'select-error' : ''}`}
+            className={`select select-bordered w-full ${
+              errors.contestType ? "select-error" : ""
+            }`}
           >
             <option value="">Select contest type</option>
-            {categories.map(category => (
+            {categories.map((category) => (
               <option key={category.value} value={category.value}>
                 {category.label}
               </option>
@@ -280,7 +298,9 @@ export default function UpdateCreateContestForm({
             name="deadline"
             value={formData.deadline}
             onChange={handleChange}
-            className={`input input-bordered w-full ${errors.deadline ? 'input-error' : ''}`}
+            className={`input input-bordered w-full ${
+              errors.deadline ? "input-error" : ""
+            }`}
           />
           {errors.deadline && (
             <p className="text-red-500 text-sm mt-1">{errors.deadline}</p>
@@ -294,7 +314,9 @@ export default function UpdateCreateContestForm({
           name="description"
           value={formData.description}
           onChange={handleChange}
-          className={`textarea textarea-bordered w-full ${errors.description ? 'textarea-error' : ''}`}
+          className={`textarea textarea-bordered w-full ${
+            errors.description ? "textarea-error" : ""
+          }`}
           placeholder="Describe your contest"
           rows={3}
         />
@@ -309,7 +331,9 @@ export default function UpdateCreateContestForm({
           name="taskInstruction"
           value={formData.taskInstruction}
           onChange={handleChange}
-          className={`textarea textarea-bordered w-full ${errors.taskInstruction ? 'textarea-error' : ''}`}
+          className={`textarea textarea-bordered w-full ${
+            errors.taskInstruction ? "textarea-error" : ""
+          }`}
           placeholder="Enter task instructions for participants"
           rows={4}
         />
@@ -349,14 +373,14 @@ export default function UpdateCreateContestForm({
         >
           Cancel
         </button>
-        <button
-          type="submit"
-          className="btn btn-primary"
-          disabled={loading}
-        >
+        <button type="submit" className="btn btn-primary" disabled={loading}>
           {loading ? (
             <span className="loading loading-spinner"></span>
-          ) : contest ? "Update Contest" : "Create Contest"}
+          ) : contest ? (
+            "Update Contest"
+          ) : (
+            "Create Contest"
+          )}
         </button>
       </div>
     </form>
