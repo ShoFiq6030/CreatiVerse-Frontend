@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useTheme } from "../hooks/useTheme";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axiosSecure from "../api/axiosSecure";
 import { useParams } from "react-router";
 import ProfileHeader from "../components/userProfile/ProfileHeader";
@@ -9,12 +9,18 @@ import ProfileTabs from "../components/userProfile/ProfileTabs";
 import EditProfileForm from "../components/userProfile/EditProfileForm";
 import ModalWrapper from "../components/common/ModalWrapper";
 import ContestCard from "../components/common/ContestCard";
+import UpdateCreateContestForm from "../components/common/UpdateCreateContestForm";
 import Loading from "../components/common/Loading";
+import useAuth from "../hooks/useAuth";
 
 export default function CreatorProfile() {
   const { theme } = useTheme();
   const [editing, setEditing] = useState(false);
+  const [contestModalOpen, setContestModalOpen] = useState(false);
+  const [selectedContest, setSelectedContest] = useState(null);
   const { userId } = useParams();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
 
   const wrapperBg =
     theme === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800";
@@ -26,7 +32,24 @@ export default function CreatorProfile() {
       return res.data.data;
     },
   });
+  const {
+    data: userContest,
+  } = useQuery({
+    queryKey: ["contests", userId],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`contest/get-contests-auth`);
+      return res.data.data;
+    },
+  });
+  console.log(userContest);
 
+  if (user.role !== "creator") {
+    return (
+      <div className="container mx-auto px-6 py-10 text-red-500">
+        Access Denied. You do not have permission to view this page.
+      </div>
+    );
+  }
   if (isLoading) {
     return <Loading />;
   }
@@ -40,7 +63,11 @@ export default function CreatorProfile() {
   }
 
   const stats = data?.stats || { contests: 0, wins: 0, points: 0 };
-  const submissions = data?.submissions || [];
+  const pendingContest =
+    userContest?.contests?.filter((c) => c.status === "pending") || [];
+
+  const approvedContest =
+    userContest?.contests?.filter((c) => c.status === "approve") || [];
 
   return (
     <div className={`container mx-auto px-6 py-10 ${wrapperBg}`}>
@@ -49,7 +76,7 @@ export default function CreatorProfile() {
           Creator
         </span>
       </div>
-      
+
       <ProfileHeader user={data} onEdit={() => setEditing(true)} />
 
       <ModalWrapper
@@ -58,6 +85,27 @@ export default function CreatorProfile() {
         onClose={() => setEditing(false)}
       >
         <EditProfileForm user={data} onClose={() => setEditing(false)} />
+      </ModalWrapper>
+
+      <ModalWrapper
+        isOpen={contestModalOpen}
+        title={selectedContest ? "Edit Contest" : "Create Contest"}
+        onClose={() => {
+          setContestModalOpen(false);
+          setSelectedContest(null);
+        }}
+      >
+        <UpdateCreateContestForm
+          contest={selectedContest}
+          userRole={user?.role}
+          onClose={() => {
+            setContestModalOpen(false);
+            setSelectedContest(null);
+          }}
+          onSuccess={() => {
+            queryClient.invalidateQueries(["contests", userId]);
+          }}
+        />
       </ModalWrapper>
 
       <div className="grid md:grid-cols-3 gap-6 mb-6">
@@ -72,17 +120,24 @@ export default function CreatorProfile() {
 
                   <div>
                     <h3 className="text-xl font-semibold mb-3">
-                      Recent Submissions
+                      Pending Contests
                     </h3>
-                    {submissions.length ? (
+                    {pendingContest.length ? (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {submissions.map((s) => (
-                          <ContestCard key={s._id} contest={s} />
+                        {pendingContest.map((s) => (
+                          <ContestCard 
+                            key={s._id} 
+                            contest={s} 
+                            onEdit={(contest) => {
+                              setSelectedContest(contest);
+                              setContestModalOpen(true);
+                            }}
+                          />
                         ))}
                       </div>
                     ) : (
                       <p className="text-sm">
-                        You have not submitted to any contests yet.
+                        You have no pending contests.
                       </p>
                     )}
                   </div>
@@ -91,9 +146,9 @@ export default function CreatorProfile() {
               submissions: (
                 <div>
                   <h3 className="text-lg font-semibold mb-3">My Submissions</h3>
-                  {submissions.length ? (
+                  {approvedContest.length ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {submissions.map((s) => (
+                      {approvedContest.map((s) => (
                         <ContestCard key={s._id} contest={s} />
                       ))}
                     </div>
@@ -136,10 +191,15 @@ export default function CreatorProfile() {
               <h4 className="font-semibold mb-2">About</h4>
               <p className="text-sm">{data?.bio || "No bio yet."}</p>
             </div>
-            
+
             <div className="p-4 rounded-lg shadow">
               <h4 className="font-semibold mb-2">Creator Tools</h4>
-              <button className="btn w-full mb-2">Create Contest</button>
+              <button 
+                className="btn w-full mb-2"
+                onClick={() => setContestModalOpen(true)}
+              >
+                Create Contest
+              </button>
               <button className="btn w-full">Manage Contests</button>
             </div>
           </div>

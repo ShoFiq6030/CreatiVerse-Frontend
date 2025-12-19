@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTheme } from "../../hooks/useTheme";
+import app from './../../utils/firebaseConfig';
 
 export default function ProfileTabs({ children }) {
   const [tab, setTab] = useState("overview");
@@ -16,7 +17,7 @@ export default function ProfileTabs({ children }) {
           }`}
           onClick={() => setTab("overview")}
         >
-          Overview
+          Pending Contests
         </button>
         <button
           className={`px-3 py-2 rounded ${
@@ -24,7 +25,7 @@ export default function ProfileTabs({ children }) {
           }`}
           onClick={() => setTab("submissions")}
         >
-          My Submissions
+          Approved Contests
         </button>
         {/* <button
           className={`px-3 py-2 rounded ${

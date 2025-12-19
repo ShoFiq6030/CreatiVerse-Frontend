@@ -144,9 +144,9 @@ export default function NavBar() {
                       Profile
                     </Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <a>Settings</a>
-                  </li>
+                  </li> */}
                   <li>
                     <button
                       className="w-full text-left"

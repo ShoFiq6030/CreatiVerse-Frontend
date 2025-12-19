@@ -3,8 +3,9 @@ import { FiClock } from "react-icons/fi";
 import { FaDollarSign, FaTrophy, FaUsers } from "react-icons/fa";
 import { Link } from "react-router";
 import { useTheme } from "../../hooks/useTheme";
+import useAuth  from "../../hooks/useAuth";
 
-export default function ContestCard({ contest }) {
+export default function ContestCard({ contest, onEdit }) {
   const [timeLeft, setTimeLeft] = useState("");
   const { theme } = useTheme();
 
@@ -45,6 +46,7 @@ export default function ContestCard({ contest }) {
     theme === "dark" ? "bg-gray-800 text-gray-100" : "bg-white text-gray-800";
   const metaText = theme === "dark" ? "text-gray-300" : "text-gray-600";
   const mutedBg = theme === "dark" ? "bg-gray-700/50" : "bg-white/70";
+  const { user } = useAuth();
 
   return (
     <div
@@ -105,13 +107,23 @@ export default function ContestCard({ contest }) {
             </p>
           </div>
 
-          <div className="ml-auto">
+          <div className="ml-auto space-y-2">
             <Link
               to={`/contest/${contest._id}`}
               className="inline-block px-3 py-2 rounded-md bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition"
             >
               Details
             </Link>
+            
+            {user?.role === "creator" || user?.role === "admin" && (
+              <button
+                onClick={() => onEdit?.(contest)}
+                className="btn btn-sm btn-outline w-full"
+                title="Edit contest"
+              >
+                Edit
+              </button>
+            )}
           </div>
         </div>
       </div>
