@@ -12,7 +12,7 @@ export default function PopularContest() {
       return res.data.data;
     },
   });
-  // console.log(data);
+  console.log(data);
   if (error) return <div>{error.message}</div>;
   // console.log(data);
 

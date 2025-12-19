@@ -3,7 +3,7 @@ import { FiClock } from "react-icons/fi";
 import { FaDollarSign, FaTrophy, FaUsers } from "react-icons/fa";
 import { Link } from "react-router";
 import { useTheme } from "../../hooks/useTheme";
-import useAuth  from "../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 
 export default function ContestCard({ contest, onEdit }) {
   const [timeLeft, setTimeLeft] = useState("");
@@ -114,8 +114,8 @@ export default function ContestCard({ contest, onEdit }) {
             >
               Details
             </Link>
-            
-            {user?.role === "creator" || user?.role === "admin" && (
+
+            {user?.role === "admin" && (
               <button
                 onClick={() => onEdit?.(contest)}
                 className="btn btn-sm btn-outline w-full"

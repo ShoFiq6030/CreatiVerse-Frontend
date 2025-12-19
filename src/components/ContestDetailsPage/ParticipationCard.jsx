@@ -1,7 +1,11 @@
-import React from "react";
+import React, { use, useState } from "react";
 import { FaUser, FaClock, FaImage } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";
+import { useToast } from "../../provider/ToastProvider";
+import axiosSecure from "../../api/axiosSecure";
+import ConfirmModal from "../common/ConfirmModal";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function ParticipationCard({
   submission,
@@ -12,12 +16,43 @@ export default function ParticipationCard({
   const { theme } = useTheme();
   // Check if this submission belongs to the current user
   const isCurrentUser = submission.userId === currentUserId;
+  const queryClient = useQueryClient();
 
   // Get user display name from submission data
   const userName = user?.name || "Anonymous";
 
   // Format submission date
   const submissionDate = new Date(submission.createdAt).toLocaleString();
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const { success, error } = useToast();
+
+  const handleSubmitWinner = async (submission) => {
+    setSelectedSubmission(submission);
+    setShowConfirmModal(true);
+  };
+
+  const confirmWinner = async () => {
+    if (!selectedSubmission) return;
+
+    setLoading(true);
+    try {
+      const response = await axiosSecure.patch(
+        `/contest/declare-winner/${contest._id}/${selectedSubmission.userId}/${selectedSubmission._id}`
+      );
+
+      success(response.data.message || "Winner declared successfully!");
+      setShowConfirmModal(false);
+      queryClient.invalidateQueries(["submission", contest._id]);
+    } catch (err) {
+      console.error("Error declaring winner:", err);
+      error(err.response?.data?.message || "Failed to declare winner");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Theme-based styling
   const cardBg = theme === "dark" ? "bg-gray-800" : "bg-white";
@@ -135,10 +170,13 @@ export default function ParticipationCard({
           className={`flex justify-between items-center text-xs ${textSecondary}`}
         >
           <span>Submission ID: {submission._id?.slice(-6)}</span>
-          {contest.creator === user._id ? (
+          {contest.creator === user._id || user?.role === "admin" ? (
             <span
+              onClick={() => handleSubmitWinner(submission)}
               className={`px-2 py-1 rounded hover:cursor-pointer hover:bg-indigo-500  ${
-                theme === "dark" ? "text-indigo-300 bg-indigo-900/50 " : "text-indigo-900 bg-indigo-300" 
+                theme === "dark"
+                  ? "text-indigo-300 bg-indigo-900/50 "
+                  : "text-indigo-900 bg-indigo-300"
               }  
                 
             `}
@@ -158,6 +196,19 @@ export default function ParticipationCard({
           )}
         </div>
       </div>
+
+      {/* Confirm Modal */}
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        title="Declare Winner"
+        message={`Are you sure you want to declare ${userName} as the winner of this contest? This action cannot be undone.`}
+        onConfirm={confirmWinner}
+        onCancel={() => setShowConfirmModal(false)}
+        confirmText="Declare Winner"
+        cancelText="Cancel"
+        confirmVariant="btn-success"
+        loading={loading}
+      />
 
       {/* Highlight Border for Current User */}
       {isCurrentUser && (

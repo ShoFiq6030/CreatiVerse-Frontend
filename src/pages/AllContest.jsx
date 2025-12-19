@@ -6,15 +6,18 @@ import axiosSecure from "../api/axiosSecure";
 import ContestCard from "../components/common/ContestCard";
 import { categories } from "../constants/categories";
 import Loading from "../components/common/Loading";
-import { useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import useDebounce from "../hooks/useDebounce";
 import { useTheme } from "../hooks/useTheme";
+import ModalWrapper from "../components/common/ModalWrapper";
+import UpdateCreateContestForm from "../components/common/UpdateCreateContestForm";
 
 export default function AllContest() {
   const [searchParams] = useSearchParams();
   //   const location = useLocation();
   //   const navigate = useNavigate();
   const { theme } = useTheme();
+  const [selectedContest, setSelectedContest] = useState(null);
 
   const initialSearch = searchParams.get("search");
   const initialType = searchParams.get("type");
@@ -25,14 +28,21 @@ export default function AllContest() {
   const [sort, setSort] = useState("newest");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  const [openModal, setOpenModal] = useState(false);
   //   const [loading, setLoading] = useState(isLoading);
   // const [totalCount, setTotalCount] = useState(0);
   // debounce function for search
   const debouncedSearch = useDebounce(searchInput, 1000);
+  const queryClient = useQueryClient();
 
   console.log(type);
 
-  const { data, isLoading, error } = useQuery({
+  const {
+    data,
+    isLoading,
+    error,
+    refetch: refetchContests,
+  } = useQuery({
     queryKey: ["contests", debouncedSearch, type, sort, page, limit],
     queryFn: async () => {
       const res = await axiosSecure.get("/contest/get-contests", {
@@ -121,6 +131,34 @@ export default function AllContest() {
     <div className="container mx-auto px-6 py-10">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
+          <ModalWrapper
+            isOpen={openModal}
+            title={"Edit Contest"}
+            onClose={() => {
+              setOpenModal(false);
+              setSelectedContest(null);
+            }}
+          >
+            <UpdateCreateContestForm
+              refetchContests={refetchContests}
+              contest={selectedContest}
+              onClose={() => {
+                setOpenModal(false);
+                setSelectedContest(null);
+              }}
+              onSuccess={() => {
+                queryClient.invalidateQueries([
+                  "contests",
+                  debouncedSearch,
+                  type,
+                  sort,
+                  page,
+                  limit,
+                ]);
+              }}
+            />
+          </ModalWrapper>
+
           {/* contest type dropdown */}
           <select
             value={type}
@@ -287,7 +325,14 @@ export default function AllContest() {
       ) : data?.contests?.length ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {data?.contests?.map((contest) => (
-            <ContestCard key={contest._id} contest={contest} />
+            <ContestCard
+              key={contest._id}
+              contest={contest}
+              onEdit={(contest) => {
+                setSelectedContest(contest);
+                setOpenModal(true);
+              }}
+            />
           ))}
         </div>
       ) : (
