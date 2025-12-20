@@ -96,7 +96,7 @@ export default function Login() {
   };
 
   return (
-    <div className="container mx-auto lg:h-screen flex justify-center items-center p-6">
+    <div className="container mx-auto h-screen flex justify-center items-center p-6">
       <div className="w-100 mx-auto card bg-base-100 shadow-md border p-6">
         <h2 className="text-2xl font-bold mb-4">Login</h2>
         <div className="flex flex-col gap-4 my-5">

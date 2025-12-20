@@ -25,7 +25,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative bg-linear-to-r from-purple-600 via-pink-500 to-red-400 text-white">
+    <section className="relative top-13 bg-linear-to-r from-purple-600 via-pink-500 to-red-400 text-white">
       <div className="container mx-auto px-6 py-20 md:py-32">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-extrabold drop-shadow-lg">
@@ -38,15 +38,15 @@ export default function HeroSection() {
 
           <form
             onSubmit={searchContests}
-            className="mt-8 bg-white/10 backdrop-blur-sm rounded-full p-2 flex items-center gap-3 max-w-3xl mx-auto shadow-lg"
+            className="mt-8 bg-white/10 backdrop-blur-sm rounded-full p-2 flex flex-col md:flex-row items-center gap-3 max-w-3xl mx-auto shadow-lg"
           >
             <div className="flex items-center gap-3 flex-1 px-4">
-              <FiSearch className="text-white text-xl" />
+              <FiSearch className="text-white text-xl " size={25}/>
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search contests, e.g. logo design, photography..."
-                className="bg-transparent placeholder-purple-200 outline-none w-full text-white"
+                className="bg-transparent placeholder-purple-200 outline-none w-full text-white border-2 border-white/20 focus:border-white/40 rounded-full py-2 px-3 transition-all duration-150"
                 aria-label="Search contests"
               />
             </div>
@@ -101,7 +101,7 @@ export default function HeroSection() {
 
             <button
               type="submit"
-              className="bg-white text-purple-700 px-6 py-2 rounded-full font-semibold mr-1"
+               className="flex-1 bg-linear-to-r from-pink-600 to-purple-600 text-white py-2 px-4 rounded-full font-semibold hover:shadow-lg transform hover:-translate-y-1 transition duration-300 text-center"
             >
               Search
             </button>
@@ -109,14 +109,14 @@ export default function HeroSection() {
         </div>
       </div>
       {/* Decorative bottom shape */}
-      <div className="absolute -bottom-10 left-0 right-0 pointer-events-none">
+      {/* <div className="absolute -bottom-10 left-0 right-0 pointer-events-none">
         <svg viewBox="0 0 1440 80" className="w-full h-20 text-white/20">
           <path
             fill="currentColor"
             d="M0,0 C360,80 1080,0 1440,80 L1440 0 L0 0 Z"
           ></path>
         </svg>
-      </div>
+      </div> */}
     </section>
   );
 }

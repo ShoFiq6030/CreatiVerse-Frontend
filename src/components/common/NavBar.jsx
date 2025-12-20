@@ -46,8 +46,8 @@ export default function NavBar() {
   };
 
   return (
-    <div className="container mx-auto bg-base-100 shadow-sm ">
-      <div className="navbar z-10  ">
+    <div className="container mx-auto bg-base-100 shadow-sm fixed top-0 left-0 right-0 z-50">
+      <div className="navbar">
         <div className="md:flex-1">
           <Link>
             <img src={logo} alt="logo" className="w-24" />

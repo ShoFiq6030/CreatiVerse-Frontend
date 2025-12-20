@@ -114,7 +114,7 @@ export default function Registration() {
   };
 
   return (
-    <div className="container mx-auto p-6 lg:h-screen flex justify-center items-center">
+    <div className="container mx-auto p-6 h-screen flex justify-center items-center">
       <div className="w-120 mx-auto card bg-base-100 shadow-lg  border-2 p-6">
         <h2 className="text-2xl font-bold mb-4">Register</h2>
         <div className="flex flex-col gap-4 my-5">

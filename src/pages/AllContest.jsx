@@ -128,7 +128,10 @@ export default function AllContest() {
   };
 
   return (
-    <div className="container mx-auto px-6 py-10">
+    <div className="container relative top-20 mx-auto px-6 py-10">
+      <h2 className="text-4xl md:text-5xl font-bold mb-10 text-center">
+        All Contests
+      </h2>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div className="flex items-center gap-3">
           <ModalWrapper

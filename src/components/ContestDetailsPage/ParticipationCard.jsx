@@ -1,4 +1,4 @@
-import React, { use, useState } from "react";
+import React, { useState } from "react";
 import { FaUser, FaClock, FaImage } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
 import { useTheme } from "../../hooks/useTheme";

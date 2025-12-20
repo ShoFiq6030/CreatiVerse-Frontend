@@ -28,8 +28,8 @@ export default function About() {
   ];
 
   return (
-    <div className={`container mx-auto px-6 py-12 ${wrapperBg}`}>
-      <section className="max-w-4xl mx-auto text-center mb-12">
+    <div className={`container mx-auto  px-6 py-12 relative top-20 ${wrapperBg}`}>
+      <section className="max-w-4xl  mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">About Our Contest Platform</h1>
         <p className={`mx-auto max-w-2xl ${muted}`}>
           We connect talented creators with exciting contests that help them
@@ -94,7 +94,7 @@ export default function About() {
         </div>
       </section>
 
-      <section>
+      <section className="mb-10">
         <h3 className="text-2xl font-semibold mb-4">Meet the Team</h3>
         <div className="grid md:grid-cols-3 gap-6">
           {members.map((member,i) => (

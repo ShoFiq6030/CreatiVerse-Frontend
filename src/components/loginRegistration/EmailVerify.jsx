@@ -47,7 +47,7 @@ export default function EmailVerify() {
   };
 
   return (
-    <div className="container mx-auto lg:h-screen flex justify-center items-center p-6">
+    <div className="container mx-auto h-screen flex justify-center items-center p-6">
       <div className="max-w-md mx-auto card bg-base-100  border-2 shadow-md p-6">
         <h2 className="text-2xl font-bold mb-4">Verify Email</h2>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
