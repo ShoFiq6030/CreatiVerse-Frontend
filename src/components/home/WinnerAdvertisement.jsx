@@ -166,9 +166,9 @@ export default function WinnerAdvertisement() {
                     <Link to={`/contest/${currentWinner._id}`} className="bg-linear-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition duration-300">
                       View Contest
                     </Link>
-                    <button className={`px-6 py-3 rounded-lg font-semibold border ${theme === 'dark' ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-50'} transition duration-300`}>
+                    {/* <button className={`px-6 py-3 rounded-lg font-semibold border ${theme === 'dark' ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-50'} transition duration-300`}>
                       See Submission
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>

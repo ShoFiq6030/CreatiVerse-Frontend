@@ -1,6 +1,7 @@
 import React from "react";
 import HeroSection from "../components/home/Hero";
 import WinnerAdvertisement from "../components/home/WinnerAdvertisement";
+import HowItWorks from "../components/home/HowItWorks";
 import PopularContest from "../components/home/PopularContest";
 
 export default function Home() {
@@ -9,6 +10,8 @@ export default function Home() {
       <HeroSection />
       <PopularContest />
       <WinnerAdvertisement />
+
+      <HowItWorks />
     </div>
   );
 }
