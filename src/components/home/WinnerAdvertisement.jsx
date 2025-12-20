@@ -22,11 +22,11 @@ export default function WinnerAdvertisement() {
   // Auto-rotate winners every 4 seconds
   useEffect(() => {
     if (!data || data.length <= 1) return;
-    
+
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % data.length);
     }, 4000);
-    
+
     return () => clearInterval(interval);
   }, [data]);
 
@@ -54,20 +54,25 @@ export default function WinnerAdvertisement() {
     return null;
   }
 
-  const totalPrizeMoney = data.reduce((sum, contest) => sum + contest.prizeMoney, 0);
+  const totalPrizeMoney = data.reduce(
+    (sum, contest) => sum + contest.prizeMoney,
+    0
+  );
   const totalWinners = data.length;
 
   const currentWinner = data[currentIndex];
   const nextWinner = data[(currentIndex + 1) % data.length];
 
-  const sectionBg = theme === "dark" 
-    ? "bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900" 
-    : "bg-gradient-to-br from-purple-50 via-pink-50 to-red-50";
-  
-  const cardBg = theme === "dark" 
-    ? "bg-gradient-to-br from-gray-800 to-gray-900" 
-    : "bg-white";
-  
+  const sectionBg =
+    theme === "dark"
+      ? "bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900"
+      : "bg-gradient-to-br from-purple-50 via-pink-50 to-red-50";
+
+  const cardBg =
+    theme === "dark"
+      ? "bg-gradient-to-br from-gray-800 to-gray-900"
+      : "bg-white";
+
   const textColor = theme === "dark" ? "text-white" : "text-gray-800";
   const mutedText = theme === "dark" ? "text-gray-300" : "text-gray-600";
 
@@ -90,7 +95,7 @@ export default function WinnerAdvertisement() {
             <FaTrophy className="text-3xl text-yellow-400" />
           </div>
           <p className={`text-lg md:text-xl ${mutedText} max-w-3xl mx-auto`}>
-            Be inspired by our recent winners! Their creativity, dedication, and 
+            Be inspired by our recent winners! Their creativity, dedication, and
             talent have earned them recognition and rewards. Could you be next?
           </p>
         </div>
@@ -98,16 +103,18 @@ export default function WinnerAdvertisement() {
         <div className="grid lg:grid-cols-3 gap-8 items-center">
           {/* Main Winner Showcase */}
           <div className="lg:col-span-2">
-            <div className={`rounded-2xl p-8 ${cardBg} shadow-xl relative overflow-hidden ${textColor}`}>
+            <div
+              className={`rounded-2xl p-8 ${cardBg} shadow-xl relative overflow-hidden ${textColor}`}
+            >
               {/* Decorative border */}
               <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-purple-500 via-pink-500 to-red-500"></div>
-              
+
               {/* Winner Image */}
               <div className="grid md:grid-cols-2 gap-8 items-center">
                 <div className="relative">
                   <div className="aspect-square rounded-xl overflow-hidden shadow-2xl">
-                    <img 
-                      src={currentWinner.image} 
+                    <img
+                      src={currentWinner.image}
                       alt={currentWinner.contestName}
                       className="w-full h-full object-cover transform hover:scale-105 transition duration-500"
                     />
@@ -124,7 +131,9 @@ export default function WinnerAdvertisement() {
                       <span className="bg-linear-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                         #{currentIndex + 1} Winner
                       </span>
-                      <span className={`text-sm ${mutedText}`}>Recent Victory</span>
+                      <span className={`text-sm ${mutedText}`}>
+                        Recent Victory
+                      </span>
                     </div>
                     <h3 className="text-3xl md:text-4xl font-bold">
                       {currentWinner.contestName}
@@ -135,19 +144,29 @@ export default function WinnerAdvertisement() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-gray-700/50' : 'bg-purple-50'}`}>
+                    <div
+                      className={`p-4 rounded-xl ${
+                        theme === "dark" ? "bg-gray-700/50" : "bg-purple-50"
+                      }`}
+                    >
                       <div className="flex items-center gap-3">
                         <div className="bg-linear-to-r from-purple-500 to-pink-500 p-2 rounded-lg">
                           <FaMedal className="text-white" />
                         </div>
                         <div>
                           <p className={`text-sm ${mutedText}`}>Winner</p>
-                          <p className="font-semibold">{currentWinner.winner.user.name}</p>
+                          <p className="font-semibold">
+                            {currentWinner.winner.user.name}
+                          </p>
                         </div>
                       </div>
                     </div>
 
-                    <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-gray-700/50' : 'bg-pink-50'}`}>
+                    <div
+                      className={`p-4 rounded-xl ${
+                        theme === "dark" ? "bg-gray-700/50" : "bg-pink-50"
+                      }`}
+                    >
                       <div className="flex items-center gap-3">
                         <div className="bg-linear-to-r from-pink-500 to-red-500 p-2 rounded-lg">
                           <FiAward className="text-white" />
@@ -163,7 +182,10 @@ export default function WinnerAdvertisement() {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <Link to={`/contest/${currentWinner._id}`} className="bg-linear-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition duration-300">
+                    <Link
+                      to={`/contest/${currentWinner._id}`}
+                      className="bg-linear-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition duration-300"
+                    >
                       View Contest
                     </Link>
                     {/* <button className={`px-6 py-3 rounded-lg font-semibold border ${theme === 'dark' ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-300 hover:bg-gray-50'} transition duration-300`}>
@@ -181,9 +203,11 @@ export default function WinnerAdvertisement() {
                   key={index}
                   onClick={() => setCurrentIndex(index)}
                   className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                    index === currentIndex 
-                      ? 'bg-linear-to-r from-purple-500 to-pink-500 scale-125' 
-                      : theme === 'dark' ? 'bg-gray-600 hover:bg-gray-500' : 'bg-gray-300 hover:bg-gray-400'
+                    index === currentIndex
+                      ? "bg-linear-to-r from-purple-500 to-pink-500 scale-125"
+                      : theme === "dark"
+                      ? "bg-gray-600 hover:bg-gray-500"
+                      : "bg-gray-300 hover:bg-gray-400"
                   }`}
                   aria-label={`View winner ${index + 1}`}
                 />
@@ -198,9 +222,13 @@ export default function WinnerAdvertisement() {
                 <FiUsers className="text-2xl text-purple-500" />
                 <h4 className="text-2xl font-bold">Success Statistics</h4>
               </div>
-              
+
               <div className="space-y-4">
-                <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-gray-700/50' : 'bg-purple-50'}`}>
+                <div
+                  className={`p-4 rounded-xl ${
+                    theme === "dark" ? "bg-gray-700/50" : "bg-purple-50"
+                  }`}
+                >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className={`text-sm ${mutedText}`}>Total Winners</p>
@@ -212,10 +240,16 @@ export default function WinnerAdvertisement() {
                   </div>
                 </div>
 
-                <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-gray-700/50' : 'bg-pink-50'}`}>
+                <div
+                  className={`p-4 rounded-xl ${
+                    theme === "dark" ? "bg-gray-700/50" : "bg-pink-50"
+                  }`}
+                >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className={`text-sm ${mutedText}`}>Total Prize Money</p>
+                      <p className={`text-sm ${mutedText}`}>
+                        Total Prize Money
+                      </p>
                       <p className="text-3xl font-bold text-green-600">
                         ${totalPrizeMoney.toLocaleString()}
                       </p>
@@ -226,12 +260,19 @@ export default function WinnerAdvertisement() {
                   </div>
                 </div>
 
-                <div className={`p-4 rounded-xl ${theme === 'dark' ? 'bg-gray-700/50' : 'bg-red-50'}`}>
+                <div
+                  className={`p-4 rounded-xl ${
+                    theme === "dark" ? "bg-gray-700/50" : "bg-red-50"
+                  }`}
+                >
                   <div className="flex items-center justify-between">
                     <div>
                       <p className={`text-sm ${mutedText}`}>Average Prize</p>
                       <p className="text-3xl font-bold text-blue-600">
-                        ${Math.round(totalPrizeMoney / totalWinners).toLocaleString()}
+                        $
+                        {Math.round(
+                          totalPrizeMoney / totalWinners
+                        ).toLocaleString()}
                       </p>
                     </div>
                     <div className="bg-linear-to-r from-red-500 to-orange-500 p-3 rounded-lg">
@@ -247,19 +288,24 @@ export default function WinnerAdvertisement() {
               <h5 className={`text-sm ${mutedText} mb-2`}>Next Up</h5>
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full overflow-hidden">
-                  <img 
-                    src={nextWinner.image} 
+                  <img
+                    src={nextWinner.image}
                     alt={nextWinner.contestName}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
                   <p className="font-semibold">{nextWinner.contestName}</p>
-                  <p className={`text-sm ${mutedText}`}>{nextWinner.winner.user.name}</p>
+                  <p className={`text-sm ${mutedText}`}>
+                    {nextWinner.winner.user.name}
+                  </p>
                 </div>
               </div>
               <p className={`text-sm ${mutedText} mt-2`}>
-                Prize: <span className="font-semibold text-green-600">${nextWinner.prizeMoney}</span>
+                Prize:{" "}
+                <span className="font-semibold text-green-600">
+                  ${nextWinner.prizeMoney}
+                </span>
               </p>
             </div>
 
@@ -269,7 +315,10 @@ export default function WinnerAdvertisement() {
               <p className={`text-sm ${mutedText} mb-4`}>
                 Join thousands of creators and compete for amazing prizes!
               </p>
-              <Link to="/all-contest" className="w-full bg-linear-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition duration-300">
+              <Link
+                to="/all-contests"
+                className="w-full bg-linear-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:-translate-y-1 transition duration-300"
+              >
                 Join a Contest Now
               </Link>
             </div>

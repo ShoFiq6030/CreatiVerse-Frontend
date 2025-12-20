@@ -10,6 +10,7 @@ import ContestSubmissionForm from "../components/ContestDetailsPage/ContestSubmi
 import ModalWrapper from "../components/common/ModalWrapper";
 import useAuth from "./../hooks/useAuth";
 import ParticipationCard from "../components/ContestDetailsPage/ParticipationCard";
+import { useToast } from "../provider/ToastProvider";
 
 export default function ContestDetails() {
   const { contestId } = useParams();
@@ -17,6 +18,8 @@ export default function ContestDetails() {
   const [timeLeft, setTimeLeft] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const { user } = useAuth();
+  const [copied, setCopied] = useState(false);
+  const { success } = useToast();
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ["contest", contestId],
@@ -80,6 +83,21 @@ export default function ContestDetails() {
 
   const winnerSubmissionId = contest?.winner?.submissionId;
 
+  const copyUrlToClipboard = async () => {
+    const currentUrl = window.location.href;
+
+    try {
+      await navigator.clipboard.writeText(currentUrl);
+      setCopied(true);
+
+      setTimeout(() => setCopied(false), 2000);
+      success("URL copied to clipboard");
+    } catch (err) {
+      console.error("Failed to copy URL:", err);
+      alert("Failed to copy URL");
+    }
+  };
+
   // console.log(user._id);
   // console.log(contest.creator);
   const cardBg =
@@ -87,7 +105,7 @@ export default function ContestDetails() {
   const metaText = theme === "dark" ? "text-gray-300" : "text-gray-600";
 
   return (
-    <div className={`container mx-auto px-6 py-10`}>
+    <div className={`container mx-auto relative top-20 px-6 py-10`}>
       <div className={`rounded-lg overflow-hidden shadow ${cardBg}`}>
         {openModal && (
           <ModalWrapper
@@ -118,6 +136,12 @@ export default function ContestDetails() {
             <h1 className="text-2xl font-bold mb-3">{contest.contestName}</h1>
             <p className={`mb-4 ${metaText}`}>
               {contest.description || "No description provided."}
+            </p>
+
+            {/* taskInstruction to do */}
+            <p className="mb-4">
+              <strong className="underline">Task Instruction:</strong>{" "}
+              {contest.taskInstruction || "No task instruction provided."}
             </p>
 
             <div className="flex items-center gap-4 mb-4">
@@ -158,9 +182,12 @@ export default function ContestDetails() {
                   </button>
                 )}
 
-              <a href="#" className="px-4 py-2 border rounded text-sm">
+              <button
+                onClick={copyUrlToClipboard}
+                className="px-4 py-2 border rounded text-sm cursor-pointer"
+              >
                 Share
-              </a>
+              </button>
             </div>
 
             <p className={`text-xs mt-4 ${metaText}`}>

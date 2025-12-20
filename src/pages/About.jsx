@@ -28,7 +28,9 @@ export default function About() {
   ];
 
   return (
-    <div className={`container mx-auto  px-6 py-12 relative top-20 ${wrapperBg}`}>
+    <div
+      className={`container mx-auto  px-6 py-12 relative top-20 ${wrapperBg}`}
+    >
       <section className="max-w-4xl  mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">About Our Contest Platform</h1>
         <p className={`mx-auto max-w-2xl ${muted}`}>
@@ -78,7 +80,7 @@ export default function About() {
               start earning rewards.
             </p>
             <Link
-              to="/all-contest"
+              to="/all-contests"
               className="inline-block px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
             >
               Browse Contests
@@ -97,11 +99,15 @@ export default function About() {
       <section className="mb-10">
         <h3 className="text-2xl font-semibold mb-4">Meet the Team</h3>
         <div className="grid md:grid-cols-3 gap-6">
-          {members.map((member,i) => (
+          {members.map((member, i) => (
             <div key={i} className={`p-6 rounded-lg ${cardBg} shadow`}>
               <div className="flex items-center gap-4">
                 {/* <div className="w-16 h-16 rounded-full bg-gray-300" /> */}
-                <img src={member.img} alt={`${member.name}-photo`} className="w-16 h-16 rounded-full object-cover " />
+                <img
+                  src={member.img}
+                  alt={`${member.name}-photo`}
+                  className="w-16 h-16 rounded-full object-cover "
+                />
                 <div>
                   <h4 className="font-semibold">{member.name}</h4>
                   <p className={`text-sm ${muted}`}>{member.role}</p>

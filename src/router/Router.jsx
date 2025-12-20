@@ -24,7 +24,7 @@ let router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/all-contest",
+        path: "/all-contests",
         element: <AllContest />,
       },
       {
@@ -35,7 +35,7 @@ let router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-    
+
       {
         path: "/auth/profile/admin/:userId",
         element: (

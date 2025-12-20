@@ -23,6 +23,6 @@ If you are developing a production application, we recommend using TypeScript wi
 
 - Large, attractive banner with a search bar.
 - Search queries `GET /get-contests` using query params `search` and `type`.
-- Results are previewed under the banner using `ContestCard` components, and you can click "See all results" to go to `/all-contest` with the same query params.
+- Results are previewed under the banner using `ContestCard` components, and you can click "See all results" to go to `/all-contests` with the same query params.
 
 Usage note: The search uses the existing `axiosSecure` instance (base URL from `VITE_API_BASE_URL`).

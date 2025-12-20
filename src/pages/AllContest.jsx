@@ -83,7 +83,7 @@ export default function AllContest() {
   //       page: String(opts.page ?? page),
   //       limit: String(opts.limit ?? limit),
   //     }).toString();
-  //     navigate(`/all-contest?${q}`, { replace: true });
+  //     navigate(`/all-contests?${q}`, { replace: true });
   //   };
 
   const changePage = (p) => {

@@ -10,18 +10,16 @@ export default function HeroSection() {
   const [type, setType] = useState("all");
   const { theme } = useTheme();
 
-  
-
   const navigate = useNavigate();
 
   const searchContests = (e) => {
     e?.preventDefault();
-   
+
     const searchQuery = new URLSearchParams({
       search: query || "",
       type: type || "all",
     }).toString();
-    navigate(`/all-contest?${searchQuery}`);
+    navigate(`/all-contests?${searchQuery}`);
   };
 
   return (
@@ -41,7 +39,7 @@ export default function HeroSection() {
             className="mt-8 bg-white/10 backdrop-blur-sm rounded-full p-2 flex flex-col md:flex-row items-center gap-3 max-w-3xl mx-auto shadow-lg"
           >
             <div className="flex items-center gap-3 flex-1 px-4">
-              <FiSearch className="text-white text-xl " size={25}/>
+              <FiSearch className="text-white text-xl " size={25} />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -101,7 +99,7 @@ export default function HeroSection() {
 
             <button
               type="submit"
-               className="flex-1 bg-linear-to-r from-pink-600 to-purple-600 text-white py-2 px-4 rounded-full font-semibold hover:shadow-lg transform hover:-translate-y-1 transition duration-300 text-center"
+              className="flex-1 bg-linear-to-r from-pink-600 to-purple-600 text-white py-2 px-4 rounded-full font-semibold hover:shadow-lg transform hover:-translate-y-1 transition duration-300 text-center"
             >
               Search
             </button>

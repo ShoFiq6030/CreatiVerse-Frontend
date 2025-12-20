@@ -3,9 +3,9 @@ import { Link } from "react-router";
 import { useTheme } from "../../hooks/useTheme";
 import useAuth from "../../hooks/useAuth";
 
-export default function ProfileHeader({  onEdit }) {
+export default function ProfileHeader({ onEdit }) {
   const { theme } = useTheme();
-  const {user}=useAuth()
+  const { user } = useAuth();
   const muted = theme === "dark" ? "text-gray-300" : "text-gray-600";
 
   return (
@@ -35,7 +35,7 @@ export default function ProfileHeader({  onEdit }) {
             >
               Edit Profile
             </button>
-            <Link to="/all-contest" className="px-3 py-2 rounded border">
+            <Link to="/all-contests" className="px-3 py-2 rounded border">
               Browse Contests
             </Link>
           </div>

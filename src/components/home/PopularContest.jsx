@@ -5,7 +5,7 @@ import Loading from "./../common/Loading";
 import { useTheme } from "../../hooks/useTheme";
 import { FaUsers, FaTrophy } from "react-icons/fa";
 import { Link } from "react-router";
-import useAuth  from "../../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 
 export default function PopularContest() {
   const { theme } = useTheme();
@@ -62,7 +62,7 @@ export default function PopularContest() {
           <>
             {/* Contest Grid */}
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {data?.slice(0, 5).map((contest) => (
+              {data?.slice(0, 6).map((contest) => (
                 <div
                   key={contest._id}
                   className={`rounded-2xl p-6 ${cardBg} shadow-xl relative overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 ${textColor}`}
@@ -96,8 +96,8 @@ export default function PopularContest() {
                     </div>
 
                     <div className="absolute top-4 right-4">
-                      <span className="bg-linear-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                        <FaUsers className="inline mr-1" />{" "}
+                      <span className="bg-linear-to-r from-purple-500 to-pink-500 text-white px-2 py-1 rounded-full text-xl font-semibold">
+                        <FaUsers size={20} className="inline mr-1" />{" "}
                         {contest.participantsCount}
                       </span>
                     </div>
@@ -150,7 +150,7 @@ export default function PopularContest() {
             {data?.length > 0 && (
               <div className={`mt-12 text-center ${textColor}`}>
                 <Link
-                  to="/all-contest"
+                  to="/all-contests"
                   className="bg-linear-to-r from-purple-500 to-pink-500 text-white px-8 py-4 rounded-lg font-semibold text-lg hover:shadow-lg transform hover:-translate-y-1 transition duration-300"
                 >
                   Show All
