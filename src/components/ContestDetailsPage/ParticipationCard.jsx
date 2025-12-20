@@ -76,7 +76,7 @@ export default function ParticipationCard({
           ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 shadow-lg ring-2 ring-indigo-200 dark:ring-indigo-800"
           : `${borderColor} ${cardBg} ${hoverShadow}`
       }
-      ${isWinner ? "ring-2 ring-yellow-500" : ""}
+      ${isWinner ? "ring-4 ring-offset-purple-800" : ""}
       `}
     >
       {/* User Info Header */}
@@ -103,6 +103,11 @@ export default function ParticipationCard({
               </span>
             )}
           </div>
+        </div>
+        <div>
+          {isWinner ? (
+            <span className="text-green-600 font-bold">Winner</span>
+          ) : null}
         </div>
         <div
           className={`text-xs ${
@@ -197,7 +202,7 @@ export default function ParticipationCard({
                   : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
               }`}
             >
-              {submission.status || "Submitted"}
+              {isWinner ? "Contest Winner" : "Submitted"}
             </span>
           )}
         </div>
