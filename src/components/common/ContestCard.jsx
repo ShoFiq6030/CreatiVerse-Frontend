@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { FiClock } from "react-icons/fi";
-import { FaDollarSign, FaTrophy, FaUsers } from "react-icons/fa";
+import { FaDollarSign, FaTrophy, FaUsers, FaTrash } from "react-icons/fa";
 import { Link } from "react-router";
 import { useTheme } from "../../hooks/useTheme";
 import useAuth from "../../hooks/useAuth";
+import axiosSecure from "../../api/axiosSecure";
+import ConfirmModal from "./ConfirmModal";
 
-export default function ContestCard({ contest, onEdit }) {
+export default function ContestCard({ contest, onEdit, onDelete }) {
   const [timeLeft, setTimeLeft] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { theme } = useTheme();
 
   useEffect(() => {
@@ -48,85 +51,143 @@ export default function ContestCard({ contest, onEdit }) {
   const mutedBg = theme === "dark" ? "bg-gray-700/50" : "bg-white/70";
   const { user } = useAuth();
 
+  // Delete contest function
+  const handleDelete = async () => {
+    try {
+      const response = await axiosSecure.delete(
+        `/contest/delete-contest/${contest._id}`
+      );
+      if (response.data.success) {
+        setShowDeleteModal(false);
+        if (onDelete) {
+          onDelete(contest._id);
+        }
+      } else {
+        // Handle error case - could show error in modal or console
+        console.error(response.data.message || "Failed to delete contest");
+      }
+    } catch (error) {
+      console.error("Error deleting contest:", error);
+    }
+  };
+
   return (
-    <div
-      className={`rounded-lg shadow-md overflow-hidden transition transform hover:shadow-lg hover:scale-105 ${cardBg}`}
-    >
-      <div className="relative">
-        <img
-          src={
-            contest.image || "https://via.placeholder.com/400x300?text=No+Image"
-          }
-          alt={contest.contestName}
-          className="w-full h-48 object-cover"
-        />
-        <div
-          className={`absolute top-3 left-3 px-2 py-1 rounded ${mutedBg} ${metaText} text-xs font-medium`}
-        >
-          <FiClock aria-hidden className="inline mr-1" />
-          <span>{timeLeft}</span>
-        </div>
-        <div
-          className={`absolute top-3 right-3 px-2 py-1 rounded ${mutedBg} ${metaText} text-xs font-medium`}
-        >
-          <FaUsers aria-hidden className="inline mr-1" />
-          <span>{contest.participantsCount}</span>
-        </div>
-      </div>
-
-      <div className="p-4">
-        <h3 className="text-lg font-semibold mb-2">{contest.contestName}</h3>
-
-        <p className={`text-sm mb-3 ${metaText}`}>
-          {contest.description
-            ? contest.description.slice(0, 120) +
-              (contest.description.length > 120 ? "…" : "")
-            : "No description available."}
-        </p>
-
-        <div className="flex items-center justify-between gap-4">
-          <div className="space-y-1 text-sm">
-            <p className={`flex items-center gap-2 ${metaText}`}>
-              <FaDollarSign className="text-sm" aria-hidden />
-              <span>
-                Entry Fee:{" "}
-                <strong className="font-semibold">${contest.price}</strong>
-              </span>
-            </p>
-            <p className={`flex items-center gap-2 ${metaText}`}>
-              <FaTrophy className="text-sm text-green-500" aria-hidden />
-              <span>
-                Prize:{" "}
-                <strong className="font-semibold text-green-500">
-                  ${contest.prizeMoney}
-                </strong>
-              </span>
-            </p>
-            <p className={`text-xs ${metaText}`}>
-              Published {formatPublished(contest.createdAt)}
-            </p>
+    <>
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onCancel={() => setShowDeleteModal(false)}
+        onConfirm={handleDelete}
+        title="Delete Contest"
+        message={`Are you sure you want to delete "${contest.contestName}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+      />
+      <div
+        className={`rounded-lg shadow-md overflow-hidden transition transform hover:shadow-lg hover:scale-105 ${cardBg}`}
+      >
+        <div className="relative">
+          <img
+            src={
+              contest.image ||
+              "https://via.placeholder.com/400x300?text=No+Image"
+            }
+            alt={contest.contestName}
+            className="w-full h-48 object-cover"
+          />
+          <div
+            className={`absolute top-3 left-3 px-2 py-1 rounded ${mutedBg} ${metaText} text-xs font-medium`}
+          >
+            <FiClock aria-hidden className="inline mr-1" />
+            <span>{timeLeft}</span>
           </div>
+          <div
+            className={`absolute top-3 right-3 px-2 py-1 rounded ${mutedBg} ${metaText} text-xs font-medium`}
+          >
+            <FaUsers aria-hidden className="inline mr-1" />
+            <span>{contest.participantsCount}</span>
+          </div>
+        </div>
 
-          <div className="ml-auto space-y-2">
-            <Link
-              to={`/contest/${contest._id}`}
-              className="inline-block px-3 py-2 rounded-md bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition"
-            >
-              Details
-            </Link>
+        <div className="p-4">
+          <h3 className="text-lg font-semibold mb-2">{contest.contestName}</h3>
 
-            {user?.role === "admin" && (
-              <button
-                onClick={() => onEdit?.(contest)}
-                className="btn btn-sm btn-outline w-full"
-                title="Edit contest"
+          <p className={`text-sm mb-3 ${metaText}`}>
+            {contest.description
+              ? contest.description.slice(0, 120) +
+                (contest.description.length > 120 ? "…" : "")
+              : "No description available."}
+          </p>
+
+          <div className="flex items-center justify-between gap-4">
+            <div className="space-y-1 text-sm">
+              <p className={`flex items-center gap-2 ${metaText}`}>
+                <FaDollarSign className="text-sm" aria-hidden />
+                <span>
+                  Entry Fee:{" "}
+                  <strong className="font-semibold">${contest.price}</strong>
+                </span>
+              </p>
+              <p className={`flex items-center gap-2 ${metaText}`}>
+                <FaTrophy className="text-sm text-green-500" aria-hidden />
+                <span>
+                  Prize:{" "}
+                  <strong className="font-semibold text-green-500">
+                    ${contest.prizeMoney}
+                  </strong>
+                </span>
+              </p>
+              <p className={`text-xs ${metaText}`}>
+                Published {formatPublished(contest.createdAt)}
+              </p>
+            </div>
+
+            <div className="ml-auto space-y-2">
+              <Link
+                to={`/contest/${contest._id}`}
+                className="inline-block px-3 py-2 rounded-md bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition"
               >
-                Edit
-              </button>
-            )}
+                Details
+              </Link>
+
+              {/* Admin can delete any contest */}
+              {user?.role === "admin" && (
+                <>
+                  <button
+                    onClick={() => onEdit?.(contest)}
+                    className="btn btn-sm btn-outline w-full"
+                    title="Edit contest"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="btn btn-sm btn-outline btn-error w-full flex items-center gap-2"
+                    title="Delete contest"
+                  >
+                    <FaTrash className="text-sm" />
+                    Delete
+                  </button>
+                </>
+              )}
+
+              {/* Creator can delete only their own contest when status is pending */}
+              {user?.role === "creator" &&
+                user?._id === contest.creator &&
+                contest.status === "pending" && (
+                  <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="btn btn-sm btn-outline btn-error w-full flex items-center gap-2"
+                    title="Delete contest"
+                  >
+                    <FaTrash className="text-sm" />
+                    Delete
+                  </button>
+                )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -30,7 +30,7 @@ export default function ConfirmModal({
 
         {/* Body */}
         <div className="mb-6">
-          <p className="text-sm text-gray-600 dark:text-gray-300">{message}</p>
+          <p className="text-sm text-gray-800 dark:text-gray-300">{message}</p>
         </div>
 
         {/* Footer */}
