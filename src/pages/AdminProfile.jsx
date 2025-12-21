@@ -66,12 +66,24 @@ export default function AdminProfile() {
   }
   refetchContests();
 
-  const stats = data?.stats || { contests: 0, wins: 0, points: 0 };
   const pendingContest =
     userContest?.contests?.filter((c) => c.status === "pending") || [];
 
   const approvedContest =
-    userContest?.contests?.filter((c) => c.status === "approve") || [];
+    userContest?.contests
+      ?.filter((c) => c.status === "approved")
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)) || [];
+
+  const completeContest =
+    userContest?.contests
+      ?.filter((c) => c.status === "completed")
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)) || [];
+
+  const stats = {
+    contests: userContest?.contests?.length || 0,
+    approved: approvedContest?.length,
+    completed: completeContest?.length || 0,
+  };
 
   return (
     <div className={`container min-h-screen mx-auto px-6 py-10 ${wrapperBg}`}>
@@ -120,7 +132,7 @@ export default function AdminProfile() {
               overview: (
                 <div className="space-y-6">
                   <div className="mb-4">
-                    <ProfileStats stats={stats} />
+                    {/* <ProfileStats stats={stats} /> */}
                   </div>
 
                   <div>
@@ -148,7 +160,7 @@ export default function AdminProfile() {
               ),
               submissions: (
                 <div>
-                  <h3 className="text-lg font-semibold mb-3">All Contests</h3>
+                  <h3 className="text-lg font-semibold mb-3">Latest Approved Contests</h3>
                   {approvedContest.length ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {approvedContest.map((s) => (
@@ -167,19 +179,25 @@ export default function AdminProfile() {
                   )}
                 </div>
               ),
-              settings: (
-                <div className="max-w-xl">
+              complete: (
                   <div>
-                    <p className="mb-2">Name: {data?.name || "-"}</p>
-                    <p className="mb-2">Email: {data?.email || "-"}</p>
-                    <p className="mb-2">Role: {data?.role || "-"}</p>
-                    <button
-                      className="btn mt-3"
-                      onClick={() => setEditing(true)}
-                    >
-                      Edit
-                    </button>
-                  </div>
+                  <h3 className="text-lg font-semibold mb-3">Latest Completed Contests</h3>
+                  {completeContest.length ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {completeContest.map((s) => (
+                        <ContestCard
+                          key={s._id}
+                          contest={s}
+                          onEdit={(contest) => {
+                            setSelectedContest(contest);
+                            setContestModalOpen(true);
+                          }}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <p>No contests yet.</p>
+                  )}
                 </div>
               ),
             }}
@@ -190,10 +208,10 @@ export default function AdminProfile() {
           <div className="sticky top-6 space-y-4">
             <ProfileStats stats={stats} />
 
-            <div className="p-4 rounded-lg shadow">
+            {/* <div className="p-4 rounded-lg shadow">
               <h4 className="font-semibold mb-2">About</h4>
               <p className="text-sm">{data?.bio || "No bio yet."}</p>
-            </div>
+            </div> */}
 
             <div className="p-4 rounded-lg shadow">
               <h4 className="font-semibold mb-2">Admin Actions</h4>

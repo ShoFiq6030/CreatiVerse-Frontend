@@ -11,17 +11,23 @@ import ModalWrapper from "../components/common/ModalWrapper";
 import useAuth from "./../hooks/useAuth";
 import ParticipationCard from "../components/ContestDetailsPage/ParticipationCard";
 import { useToast } from "../provider/ToastProvider";
+import PaymentConfirmModal from "../components/ContestDetailsPage/PaymentConfirmModal";
 
 export default function ContestDetails() {
   const { contestId } = useParams();
   const { theme } = useTheme();
   const [timeLeft, setTimeLeft] = useState("");
   const [openModal, setOpenModal] = useState(false);
+  const [paymentModal, setPaymentModal] = useState(false);
   const { user } = useAuth();
-  const [copied, setCopied] = useState(false);
-  const { success } = useToast();
+  const { success, error } = useToast();
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const {
+    data,
+    isLoading,
+    error: contestError,
+    refetch,
+  } = useQuery({
     queryKey: ["contest", contestId],
     queryFn: async () => {
       const res = await axiosSecure.get(`/contest/get-contest/${contestId}`);
@@ -40,6 +46,20 @@ export default function ContestDetails() {
     },
     enabled: !!contestId,
   });
+  const { data: paymentData, refetch: paymentDataRefetch } = useQuery({
+    queryKey: ["payment", user?._id, contestId],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/payments/payment-info`, {
+        params: {
+          userId: user._id,
+          contestId: contest._id,
+        },
+      });
+
+      return res.data.data;
+    },
+  });
+  console.log(paymentData);
 
   const userAlreadyParticipate = () => {
     const found = submissionData?.find(
@@ -75,29 +95,64 @@ export default function ContestDetails() {
     const timer = setInterval(calculateTimeLeft, 1000);
     return () => clearInterval(timer);
   }, [data]);
-
-  if (isLoading) return <Loading />;
-  if (error) return <p className="text-red-500">Error loading contest.</p>;
-
-  const contest = data;
-
-  const winnerSubmissionId = contest?.winner?.submissionId;
-
   const copyUrlToClipboard = async () => {
     const currentUrl = window.location.href;
 
     try {
       await navigator.clipboard.writeText(currentUrl);
-      setCopied(true);
-
-      setTimeout(() => setCopied(false), 2000);
       success("URL copied to clipboard");
     } catch (err) {
       console.error("Failed to copy URL:", err);
       alert("Failed to copy URL");
     }
   };
+  const openPopup = (urlFromBackend) => {
+    const width = 400;
+    const height = 700;
+    const left = window.screen.width - width / 2;
+    const top = window.screen.height - height / 2;
 
+    // Opens a centered popup window
+    window.open(
+      urlFromBackend, // URL from backend
+      "_blank", // Opens in new tab/popup
+      `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
+    );
+  };
+  const handleEnterContest = async () => {
+    setPaymentModal(true);
+  };
+  const handlePayment = async () => {
+    // setPaymentModal(false);
+    // setOpenModal(true);
+    try {
+      const res = await axiosSecure.post(`/payments/process-payment`, {
+        userId: user._id,
+        contestId: contest._id,
+      });
+      if (!res.data.url) {
+        throw new Error("Payment URL not received");
+      }
+      const { url } = res.data;
+      // openPopup(url);
+      window.location.replace(url);
+      // console.log(url);
+    } catch (error) {
+      console.log(error);
+      error("Payment failed. Please try again.");
+    }
+  };
+  const handleSubmission = () => {
+    setOpenModal(true);
+  };
+
+  if (isLoading) return <Loading />;
+  if (contestError)
+    return <p className="text-red-500">Error loading contest.</p>;
+
+  const contest = data;
+
+  const winnerSubmissionId = contest?.winner?.submissionId;
   // console.log(user._id);
   // console.log(contest.creator);
   const cardBg =
@@ -105,8 +160,17 @@ export default function ContestDetails() {
   const metaText = theme === "dark" ? "text-gray-300" : "text-gray-600";
 
   return (
-    <div className={`container mx-auto relative top-20 px-6 py-10`}>
+    <div className={`container mx-auto  my-20 px-6 py-10`}>
       <div className={`rounded-lg overflow-hidden shadow ${cardBg}`}>
+        {paymentModal && (
+          <PaymentConfirmModal
+            open={paymentModal}
+            onClose={() => setPaymentModal(false)}
+            entryFee={contest.price}
+            onPay={handlePayment}
+          />
+        )}
+
         {openModal && (
           <ModalWrapper
             isOpen={true}
@@ -175,12 +239,22 @@ export default function ContestDetails() {
                 !userAlreadyParticipate() &&
                 !winnerSubmissionId && (
                   <button
-                    className="px-4 py-2 bg-indigo-600 text-white rounded cursor-pointer"
-                    onClick={() => setOpenModal(true)}
+                    className={`px-4 ${
+                      paymentData?.status === "success" && "hidden"
+                    } py-2 bg-indigo-600 text-white rounded cursor-pointer`}
+                    onClick={handleEnterContest}
                   >
                     Enter Contest
                   </button>
                 )}
+              {paymentData?.status === "success" && (
+                <button
+                  className={`px-4 py-2 bg-indigo-600 text-white rounded cursor-pointer`}
+                  onClick={handleSubmission}
+                >
+                  submit your work
+                </button>
+              )}
 
               <button
                 onClick={copyUrlToClipboard}

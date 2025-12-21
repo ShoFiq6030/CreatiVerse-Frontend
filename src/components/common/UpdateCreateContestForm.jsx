@@ -176,7 +176,7 @@ export default function UpdateCreateContestForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <div>
           <label className="text-sm font-medium">Contest Name</label>
           <input
@@ -218,13 +218,13 @@ export default function UpdateCreateContestForm({
 
           {/* Image preview */}
           {(imagePreview || formData.image) && (
-            <div className="mt-3">
+            <div className="mt-1">
               <label className="text-sm font-medium">Image Preview</label>
               <div className="mt-2">
                 <img
                   src={imagePreview || formData.image}
                   alt="Contest preview"
-                  className="w-full h-48 object-cover rounded-lg border"
+                  className="w-22 h-22 object-cover rounded-lg border"
                 />
               </div>
             </div>

@@ -66,8 +66,8 @@ export default function AllContest() {
     { value: "newest", label: "Newest" },
     { value: "deadline-asc", label: "Deadline (soonest)" },
     { value: "deadline-desc", label: "Deadline (latest)" },
-    { value: "prize-desc", label: "Prize (high → low)" },
-    { value: "prize-asc", label: "Prize (low → high)" },
+    { value: "prize-desc", label: "Entry Fee (high → low)" },
+    { value: "prize-asc", label: "Entry Fee (low → high)" },
   ];
   // console.log(searchInput, type, sort, page, limit);
 
@@ -322,7 +322,10 @@ export default function AllContest() {
       </div>
 
       {isLoading ? (
-        <Loading />
+        <div className="h-screen">
+          {" "}
+          <Loading />
+        </div>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : data?.contests?.length ? (
@@ -339,7 +342,8 @@ export default function AllContest() {
           ))}
         </div>
       ) : (
-        <p>No contests found. Try a different search or filter.</p>
+        <div className="h-screen"><p>No contests found. Try a different search or filter.</p></div>
+        
       )}
       {data?.total === data?.contests?.length || (
         <div

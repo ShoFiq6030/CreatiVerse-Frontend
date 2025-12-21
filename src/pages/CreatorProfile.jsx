@@ -206,20 +206,20 @@ export default function CreatorProfile() {
           <div className="sticky top-6 space-y-4">
             <ProfileStats stats={stats} />
 
-            <div className="p-4 rounded-lg shadow">
+            {/* <div className="p-4 rounded-lg shadow">
               <h4 className="font-semibold mb-2">About</h4>
               <p className="text-sm">{data?.bio || "No bio yet."}</p>
-            </div>
+            </div> */}
 
             <div className="p-4 rounded-lg shadow">
               <h4 className="font-semibold mb-2">Creator Tools</h4>
               <button 
-                className="btn w-full mb-2"
+                className="btn w-full mb-2 bg-indigo-600 text-white hover:bg-indigo-700"
                 onClick={() => setContestModalOpen(true)}
               >
                 Create Contest
               </button>
-              <button className="btn w-full">Manage Contests</button>
+              {/* <button className="btn w-full">Manage Contests</button> */}
             </div>
           </div>
         </aside>

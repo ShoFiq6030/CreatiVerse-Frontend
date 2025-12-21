@@ -1,22 +1,44 @@
 import React, { useState, useEffect } from "react";
 import { FiClock } from "react-icons/fi";
-import { FaDollarSign, FaTrophy, FaUsers, FaTrash } from "react-icons/fa";
+import { MdAlternateEmail } from "react-icons/md";
+import {
+  FaDollarSign,
+  FaTrophy,
+  FaUsers,
+  FaTrash,
+  FaUser,
+} from "react-icons/fa";
 import { Link } from "react-router";
 import { useTheme } from "../../hooks/useTheme";
 import useAuth from "../../hooks/useAuth";
 import axiosSecure from "../../api/axiosSecure";
 import ConfirmModal from "./ConfirmModal";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ContestCard({ contest, onEdit, onDelete }) {
   const [timeLeft, setTimeLeft] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { theme } = useTheme();
 
+  const { data: userData } = useQuery({
+    queryKey: ["user", contest.creator],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/profile/${contest.creator}`);
+      return res.data.data;
+    },
+  });
+  console.log(userData);
+
   useEffect(() => {
     const calculateTimeLeft = () => {
       const deadline = new Date(contest.deadline).getTime();
       const now = new Date().getTime();
       const difference = deadline - now;
+      const isWinner = contest.status === "completed";
+      if (isWinner) {
+        setTimeLeft("Contest Completed");
+        return;
+      }
 
       if (difference > 0) {
         const days = Math.floor(difference / (1000 * 60 * 60 * 24));
@@ -36,7 +58,7 @@ export default function ContestCard({ contest, onEdit, onDelete }) {
     calculateTimeLeft();
     const timer = setInterval(calculateTimeLeft, 1000);
     return () => clearInterval(timer);
-  }, [contest.deadline]);
+  }, [contest.deadline, contest.status]);
 
   // Helper to format `createdAt` to a readable date/time
   const formatPublished = (iso) => {
@@ -121,6 +143,45 @@ export default function ContestCard({ contest, onEdit, onDelete }) {
 
           <div className="flex items-center justify-between gap-4">
             <div className="space-y-1 text-sm">
+              {/* creator details  */}
+              <div>
+                <p className={`flex items-center gap-2 ${metaText}`}>
+                  <FaUser className="text-sm" aria-hidden />
+                  <span>
+                    CreatorId:{" "}
+                    <strong className="font-semibold">
+                      {contest?.creator}
+                    </strong>
+                  </span>
+                </p>
+                {userData && user.role === "admin" && (
+                  <>
+                    <div>
+                      <p className={`flex items-center gap-2 ${metaText}`}>
+                        <FaUser className="text-sm" aria-hidden />
+                        <span>
+                          Name:{" "}
+                          <strong className="font-semibold">
+                            {userData?.name}
+                          </strong>
+                        </span>
+                      </p>
+                    </div>
+                    <div>
+                      <p className={`flex items-center gap-2 ${metaText}`}>
+                        <MdAlternateEmail />
+
+                        <span>
+                          Email:{" "}
+                          <strong className="font-semibold">
+                            {userData?.email}
+                          </strong>
+                        </span>
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
               <p className={`flex items-center gap-2 ${metaText}`}>
                 <FaDollarSign className="text-sm" aria-hidden />
                 <span>
@@ -147,7 +208,9 @@ export default function ContestCard({ contest, onEdit, onDelete }) {
                 to={`/contest/${contest._id}`}
                 className="inline-block px-3 py-2 rounded-md bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition"
               >
-                Details
+                {user?.role === "creator" && user?._id === contest.creator
+                  ? "submissions"
+                  : " Details"}
               </Link>
 
               {/* Admin can delete any contest */}

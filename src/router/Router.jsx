@@ -18,6 +18,8 @@ const Login = lazy(() => import("../components/loginRegistration/Login"));
 const Registration = lazy(() => import("../components/loginRegistration/Registration"));
 const EmailVerify = lazy(() => import("../components/loginRegistration/EmailVerify"));
 const ManageUsers = lazy(() => import("../pages/ManageUsers"));
+const Leaderboard = lazy(() => import("../pages/Leaderboard"));
+const PaymentSuccess = lazy(() => import("../pages/PaymentSuccess"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 
 let router = createBrowserRouter([
@@ -91,6 +93,14 @@ let router = createBrowserRouter([
             <ManageUsers />
           </PrivateRoute>
         ),
+      },
+      {
+        path: "/leaderboard",
+        element: <Leaderboard />,
+      },
+      {
+        path: "/payment-success",
+        element: <PaymentSuccess />,
       },
     ],
   },
