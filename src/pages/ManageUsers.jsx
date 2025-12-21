@@ -40,7 +40,7 @@ export default function ManageUsers() {
   // Sorting state
   const [sortField, setSortField] = useState("name");
   const [sortDirection, setSortDirection] = useState("asc");
-  const { success } = useToast();
+  const { success, error } = useToast();
 
   // Fetch all users
   const {
@@ -76,13 +76,18 @@ export default function ManageUsers() {
   // Delete user mutation
   const deleteMutation = useMutation({
     mutationFn: async (userId) => {
-      const res = await axiosSecure.delete(`/users/${userId}`);
+      const res = await axiosSecure.delete(`/users/delete-user/${userId}`);
       return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["allUsers"]);
       setShowDeleteModal(false);
       setUserToDelete(null);
+      success("User deleted successfully");
+    },
+    onError: (err) => {
+      console.error("Error deleting user:", err);
+      error("Failed to delete user");
     },
   });
 
@@ -558,6 +563,8 @@ export default function ManageUsers() {
         message={`Are you sure you want to delete "${userToDelete?.name}"? This action cannot be undone.`}
         confirmText="Delete User"
         cancelText="Cancel"
+        confirmVariant="bg-red-700 hover:bg-red-800"
+        loading={deleteMutation.isPending}
       />
     </div>
   );

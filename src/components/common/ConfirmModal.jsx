@@ -1,15 +1,16 @@
 import React from "react";
+import Loading from "./Loading";
 
-export default function ConfirmModal({ 
-  isOpen, 
-  title = "Confirm Action", 
-  message = "Are you sure you want to proceed?", 
-  onConfirm, 
-  onCancel, 
-  confirmText = "Confirm", 
+export default function ConfirmModal({
+  isOpen,
+  title = "Confirm Action",
+  message = "Are you sure you want to proceed?",
+  onConfirm,
+  onCancel,
+  confirmText = "Confirm",
   cancelText = "Cancel",
   confirmVariant = "btn-primary",
-  loading = false
+  loading = false,
 }) {
   if (!isOpen) return null;
 
@@ -35,11 +36,7 @@ export default function ConfirmModal({
 
         {/* Footer */}
         <div className="flex gap-3 justify-end">
-          <button
-            className="btn"
-            onClick={onCancel}
-            disabled={loading}
-          >
+          <button className="btn" onClick={onCancel} disabled={loading}>
             {cancelText}
           </button>
           <button
