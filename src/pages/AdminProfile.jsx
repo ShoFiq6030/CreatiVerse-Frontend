@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTheme } from "../hooks/useTheme";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import axiosSecure from "../api/axiosSecure";
-import { useParams } from "react-router";
+import { Link, useParams } from "react-router";
 import ProfileHeader from "../components/userProfile/ProfileHeader";
 import ProfileStats from "../components/userProfile/ProfileStats";
 import ProfileTabs from "../components/userProfile/ProfileTabs";
@@ -50,7 +50,11 @@ export default function AdminProfile() {
   }
 
   if (isLoading) {
-    return <Loading />;
+    return (
+      <div className="container mx-auto h-screen flex items-center justify-center">
+        <Loading />
+      </div>
+    );
   }
 
   if (isError) {
@@ -70,7 +74,7 @@ export default function AdminProfile() {
     userContest?.contests?.filter((c) => c.status === "approve") || [];
 
   return (
-    <div className={`container mx-auto px-6 py-10 ${wrapperBg}`}>
+    <div className={`container min-h-screen mx-auto px-6 py-10 ${wrapperBg}`}>
       <div className="mb-4">
         <span className="inline-block px-3 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">
           Admin
@@ -193,7 +197,9 @@ export default function AdminProfile() {
 
             <div className="p-4 rounded-lg shadow">
               <h4 className="font-semibold mb-2">Admin Actions</h4>
-              <button className="btn w-full mb-2">Manage Users</button>
+              <Link to={`/admin/manage-users`} className="btn w-full mb-2">
+                Manage Users
+              </Link>
               <button
                 className="btn w-full mb-2"
                 onClick={() => setContestModalOpen(true)}

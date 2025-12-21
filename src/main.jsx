@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router";
 import "./index.css";
@@ -7,6 +7,7 @@ import { ThemeProvider } from "./context/ThemeContest.jsx";
 import QueryProvider from "./provider/QueryProvider.jsx";
 import ToastProvider from "./provider/ToastProvider";
 import AuthProvider from "./context/AuthContext";
+import Loading from "./components/common/Loading.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -14,7 +15,9 @@ createRoot(document.getElementById("root")).render(
       <QueryProvider>
         <AuthProvider>
           <ToastProvider>
-            <RouterProvider router={router} />
+            {/* <Suspense fallback={<Loading />}> */}
+              <RouterProvider router={router} />
+            {/* </Suspense> */}
           </ToastProvider>
         </AuthProvider>
       </QueryProvider>

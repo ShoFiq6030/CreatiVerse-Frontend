@@ -1,17 +1,24 @@
-import { createBrowserRouter } from "react-router";
+import { createBrowserRouter } from "react-router"; 
+import { lazy, Suspense } from "react";
 import MainLayout from "../layouts/MainLayout";
-import Home from "../pages/Home";
-import NotFound from "../pages/NotFound";
-import Login from "../components/loginRegistration/Login";
-import Registration from "../components/loginRegistration/Registration";
-import EmailVerify from "../components/loginRegistration/EmailVerify";
-import AllContest from "../pages/AllContest";
-import ContestDetails from "../pages/ContestDetails";
-import About from "../pages/About";
+
+
+// 1. Keep Layouts and critical components as standard imports
 import PrivateRoute from "../PrivateRoutes/PrivateRoute";
-import AdminProfile from "../pages/AdminProfile";
-import CreatorProfile from "../pages/CreatorProfile";
-import UserProfilePage from "../pages/UserProfilePage";
+
+// 2. Convert Page imports to Lazy imports
+const Home = lazy(() => import("../pages/Home"));
+const AllContest = lazy(() => import("../pages/AllContest"));
+const ContestDetails = lazy(() => import("../pages/ContestDetails"));
+const AdminProfile = lazy(() => import("../pages/AdminProfile"));
+const CreatorProfile = lazy(() => import("../pages/CreatorProfile"));
+const UserProfilePage = lazy(() => import("../pages/UserProfilePage"));
+const About = lazy(() => import("../pages/About"));
+const Login = lazy(() => import("../components/loginRegistration/Login"));
+const Registration = lazy(() => import("../components/loginRegistration/Registration"));
+const EmailVerify = lazy(() => import("../components/loginRegistration/EmailVerify"));
+const ManageUsers = lazy(() => import("../pages/ManageUsers"));
+const NotFound = lazy(() => import("../pages/NotFound"));
 
 let router = createBrowserRouter([
   {
@@ -35,7 +42,6 @@ let router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
-
       {
         path: "/auth/profile/admin/:userId",
         element: (
@@ -77,6 +83,14 @@ let router = createBrowserRouter([
       {
         path: "/verify-email",
         element: <EmailVerify />,
+      },
+      {
+        path: "/admin/manage-users",
+        element: (
+          <PrivateRoute>
+            <ManageUsers />
+          </PrivateRoute>
+        ),
       },
     ],
   },
