@@ -104,8 +104,8 @@ let router = createBrowserRouter([
       },
     ],
   },
-  { path: "/payment/success", element: <PaymentSuccess /> },
-  { path: "/payment/failed", element: <PaymentFailed /> },
+  { path: "/payment-success", element: <PaymentSuccess /> },
+  { path: "/payment-failed", element: <PaymentFailed /> },
   {
     path: "*",
     element: <NotFound />,

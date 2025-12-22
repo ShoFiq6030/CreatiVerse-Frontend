@@ -63,7 +63,7 @@ export default function ContestDetails() {
 
   const userAlreadyParticipate = () => {
     const found = submissionData?.find(
-      (submission) => submission.userId === user._id
+      (submission) => submission.userId._id === user._id
     );
     return !!found;
   };
@@ -161,7 +161,7 @@ export default function ContestDetails() {
 
   return (
     <div className={`container mx-auto  my-20 px-6 py-10`}>
-      <div className={`rounded-lg overflow-hidden shadow ${cardBg}`}>
+      <div className={`rounded-lg  shadow ${cardBg}`}>
         {paymentModal && (
           <PaymentConfirmModal
             open={paymentModal}
@@ -247,14 +247,15 @@ export default function ContestDetails() {
                     Enter Contest
                   </button>
                 )}
-              {paymentData?.status === "success" && (
-                <button
-                  className={`px-4 py-2 bg-indigo-600 text-white rounded cursor-pointer`}
-                  onClick={handleSubmission}
-                >
-                  submit your work
-                </button>
-              )}
+              {paymentData?.status === "success" &&
+                !userAlreadyParticipate() && (
+                  <button
+                    className={`px-4 py-2 bg-indigo-600 text-white rounded cursor-pointer`}
+                    onClick={handleSubmission}
+                  >
+                    submit your work
+                  </button>
+                )}
 
               <button
                 onClick={copyUrlToClipboard}
@@ -275,7 +276,7 @@ export default function ContestDetails() {
           <div className="p-6">
             <h2 className="text-xl font-bold mb-4">Submissions</h2>
             {submissionData && submissionData.length > 0 ? (
-              <div className="w-full h-100">
+              <div className="w-full h-full space-y-4">
                 {submissionData.map((submission) => (
                   <ParticipationCard
                     key={submission._id}

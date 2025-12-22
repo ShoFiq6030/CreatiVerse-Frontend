@@ -48,20 +48,30 @@ export default function Registration() {
     }
     setLoading(true);
     try {
-      let profileImage = "";
+      let profileImage = null;
       if (file) {
         const url = await photoUploadToCloudinary(file);
         if (!url) throw new Error("Invalid image file");
         profileImage = url;
       }
+      let payload;
 
-      const payload = {
-        name,
-        email,
-        password,
-        profileImage,
-        role: isCreator ? "creator" : "user",
-      };
+      if (!file)
+        payload = {
+          name,
+          email,
+          password,
+          role: isCreator ? "creator" : "user",
+        };
+      else
+        payload = {
+          name,
+          email,
+          password,
+          profileImage,
+          role: isCreator ? "creator" : "user",
+        };
+
       const res = await axiosSecure.post("/auth/register", payload);
       if (res?.data?.success) {
         success("Registration successful — check your email for the code");
@@ -78,7 +88,7 @@ export default function Registration() {
       setLoading(false);
     }
   };
-   const handleGoogleSignin = async () => {
+  const handleGoogleSignin = async () => {
     setSocialLoading(true);
     setError(null);
     try {
@@ -98,8 +108,8 @@ export default function Registration() {
       // Backend returns your app's token and user data
       // merge accessToken into the user object so AuthContext persists it
       setUser(res?.data?.user);
-      const token =res?.data?.accessToken
-      localStorage.setItem("token",token)
+      const token = res?.data?.accessToken;
+      localStorage.setItem("token", token);
       success("google login successful ");
       navigate(location.state || "/");
       // console.log("Google login successful:", res.data);

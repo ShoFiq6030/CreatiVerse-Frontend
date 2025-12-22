@@ -1,46 +1,65 @@
 import React, { useState } from "react";
 import { useTheme } from "../../hooks/useTheme";
-import app from "./../../utils/firebaseConfig";
 
 export default function ProfileTabs({ children }) {
-  const [tab, setTab] = useState("overview");
+  const [tab, setTab] = useState("participated");
   const { theme } = useTheme();
   const active =
     theme === "dark" ? "bg-indigo-600 text-white" : "bg-indigo-600 text-white";
 
+  // Helper: support both patterns for passing tab content:
+  // 1) as named properties on children (children.participated)
+  // 2) as React elements with a boolean prop (e.g., <div participated>)
+  const getChild = (name) => {
+    if (children && typeof children === "object" && children[name]) {
+      return children[name];
+    }
+    const arr = React.Children.toArray(children);
+    const found = arr.find(
+      (child) => child && child.props && child.props[name]
+    );
+    return found || null;
+  };
+
   return (
     <div>
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-4 border-b border-gray-300 pb-2">
         <button
-          className={`px-3 py-2 rounded cursor-pointer ${
-            tab === "overview" ? active : "border"
+          className={`px-4 py-2 rounded-lg cursor-pointer font-medium transition-all duration-200 ${
+            tab === "participated"
+              ? active
+              : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
           }`}
-          onClick={() => setTab("overview")}
+          onClick={() => setTab("participated")}
         >
-          Pending Contests
+          My Participated Contests
         </button>
         <button
-          className={`px-3 py-2 rounded cursor-pointer ${
-            tab === "submissions" ? active : "border"
+          className={`px-4 py-2 rounded-lg cursor-pointer font-medium transition-all duration-200 ${
+            tab === "winning"
+              ? active
+              : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
           }`}
-          onClick={() => setTab("submissions")}
+          onClick={() => setTab("winning")}
         >
-          Approved Contests
+          My Winning Contests
         </button>
         <button
-          className={`px-3 py-2 rounded cursor-pointer ${
-            tab === "complete" ? active : "border"
+          className={`px-4 py-2 rounded-lg cursor-pointer font-medium transition-all duration-200 ${
+            tab === "profile"
+              ? active
+              : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
           }`}
-          onClick={() => setTab("complete")}
+          onClick={() => setTab("profile")}
         >
-          Completed Contests
+          My Profile
         </button>
       </div>
 
-      <div>
-        {tab === "overview" && <div>{children.overview}</div>}
-        {tab === "submissions" && <div>{children.submissions}</div>}
-        {tab === "complete" && <div>{children.complete}</div>}
+      <div className="mt-4">
+        {tab === "participated" && <div>{getChild("participated")}</div>}
+        {tab === "winning" && <div>{getChild("winning")}</div>}
+        {tab === "profile" && <div>{getChild("profile")}</div>}
       </div>
     </div>
   );

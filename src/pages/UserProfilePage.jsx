@@ -7,7 +7,9 @@ import ProfileHeader from "../components/userProfile/ProfileHeader";
 import ProfileStats from "../components/userProfile/ProfileStats";
 import ProfileTabs from "../components/userProfile/ProfileTabs";
 import EditProfileForm from "../components/userProfile/EditProfileForm";
-import ContestCard from "../components/common/ContestCard";
+import ParticipatedContests from "../components/userProfile/ParticipatedContests";
+import WinningContests from "../components/userProfile/WinningContests";
+import ProfileAnalytics from "../components/userProfile/ProfileAnalytics";
 import Loading from "../components/common/Loading";
 import ModalWrapper from "../components/common/ModalWrapper";
 
@@ -26,24 +28,67 @@ export default function UserProfilePage() {
       return res.data.data;
     },
   });
+  const {
+    data: userContestData,
+    isLoading: userContestLoading,
+    isError: userContestError,
+  } = useQuery({
+    queryKey: ["userContestData", userId],
+    queryFn: async () => {
+      const res = await axiosSecure.get(
+        `/users/contest-participated/${userId}`
+      );
+      return res.data.data;
+    },
+  });
+  const {
+    data: userWinningContestData,
+    isLoading: userWinningContestLoading,
+    isError: userWinningContestError,
+  } = useQuery({
+    queryKey: ["userWinningContestData", userId],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/users/contest-win/${userId}`);
+      return res.data.data;
+    },
+  });
 
-  if (isLoading) {
-    return <Loading />;
+  // console.log(userContestData);
+
+  if (isLoading || userContestLoading || userWinningContestLoading) {
+    return (
+      <div className="h-screen">
+        <Loading />
+      </div>
+    );
   }
 
-  if (isError) {
+  if (isError || userContestError || userWinningContestError) {
     return (
-      <div className="container mx-auto px-6 py-10 text-red-500">
+      <div className="container h-screen mx-auto px-6 py-10 text-red-500">
         Error loading user profile data
       </div>
     );
   }
 
-  const stats = data?.stats || { contests: 0, wins: 0, points: 0 };
-  const submissions = data?.submissions || [];
+  // // Mock data for contests (in real app, this would come from API)
+  // const participatedContests = data.participatedContests || [];
+  // const winningContests = data.winningContests || [];
+  const userStats = {
+    participated: userContestData.length,
+    wins: userWinningContestData.length,
+    totalEarnings: userWinningContestData.reduce(
+      (total, contest) => total + (contest.prizeMoney || 0),
+      0
+    ),
+    avgRating: (
+      (userWinningContestData.length / userContestData.length) *
+      100
+    ).toFixed(2),
+  };
 
   return (
-    <div className={`container mx-auto px-6 py-10 ${wrapperBg}`}>
+    <div className={`container min-h-screen mx-auto px-6 py-10 ${wrapperBg}`}>
       {editing && (
         <ModalWrapper
           title={"Profile Edit Form"}
@@ -52,88 +97,26 @@ export default function UserProfilePage() {
         >
           <EditProfileForm user={data} onClose={() => setEditing(false)} />
         </ModalWrapper>
-        // <div className="text-5xl text-red-500">Edit.......</div>
       )}
-      <ProfileHeader
-        user={data}
-        onEdit={() => {
-          console.log("edit click");
-          console.log(editing);
-          setEditing(true);
-        }}
-      />
 
-      <div className="grid md:grid-cols-3 gap-6 mb-6">
-        <div className="md:col-span-2">
-          <ProfileTabs
-            children={{
-              overview: (
-                <div className="space-y-6">
-                  <div className="mb-4">
-                    <ProfileStats stats={stats} />
-                  </div>
+      <ProfileHeader user={data} onEdit={() => setEditing(true)} />
 
-                  <div>
-                    <h3 className="text-xl font-semibold mb-3">
-                      Recent Submissions
-                    </h3>
-                    {submissions.length ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {submissions.map((s) => (
-                          <ContestCard key={s._id} contest={s} />
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm">
-                        You have not submitted to any contests yet.
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ),
-              submissions: (
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">My Submissions</h3>
-                  {submissions.length ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {submissions.map((s) => (
-                        <ContestCard key={s._id} contest={s} />
-                      ))}
-                    </div>
-                  ) : (
-                    <p>No submissions yet.</p>
-                  )}
-                </div>
-              ),
-              // settings: (
-              //   <div className="max-w-xl">
-              //     <div>
-              //       <p className="mb-2">Name: {data?.name || "-"}</p>
-              //       <p className="mb-2">Email: {data?.email || "-"}</p>
-              //       <p className="mb-2">Role: {data?.role || "-"}</p>
-              //       <button
-              //         className="btn mt-3"
-              //         onClick={() => setEditing(true)}
-              //       >
-              //         Edit
-              //       </button>
-              //     </div>
-              //   </div>
-              // ),
-            }}
-          />
-        </div>
+      <div className="mt-8">
+        <ProfileStats stats={userStats} />
+      </div>
 
-        <aside className="md:col-span-1">
-          <div className="sticky top-6 space-y-4">
-            <ProfileStats stats={stats} />
-
-            <div className="p-4 rounded-lg shadow">
-              <h4 className="font-semibold mb-2">About</h4>
-              <p className="text-sm">{data?.bio || "No bio yet."}</p>
-            </div>
+      <div className="mt-8">
+        <ProfileTabs>
+          <div participated>
+            <ParticipatedContests contests={userContestData || []} />
           </div>
-        </aside>
+          <div winning>
+            <WinningContests contests={userWinningContestData} />
+          </div>
+          <div profile>
+            <ProfileAnalytics userStats={userStats} />
+          </div>
+        </ProfileTabs>
       </div>
     </div>
   );

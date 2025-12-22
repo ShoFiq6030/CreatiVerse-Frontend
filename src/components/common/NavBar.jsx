@@ -141,7 +141,7 @@ export default function NavBar() {
                 >
                   <li>
                     <Link to={navigateTo()} className="justify-between">
-                      Profile
+                      dashboard
                     </Link>
                   </li>
                   {/* <li>

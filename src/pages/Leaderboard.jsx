@@ -12,6 +12,7 @@ import {
   FaUsers,
   FaCrown,
 } from "react-icons/fa";
+import { Link } from "react-router";
 
 export default function Leaderboard() {
   const { user } = useAuth();
@@ -25,7 +26,7 @@ export default function Leaderboard() {
   } = useQuery({
     queryKey: ["leaderboard"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/leaderboard");
+      const res = await axiosSecure.get("/contest/leaderboard");
       return res.data.data;
     },
   });
@@ -40,7 +41,7 @@ export default function Leaderboard() {
 
   if (isError) {
     return (
-      <div className="container mx-auto px-6 py-10 text-red-500">
+      <div className="container mx-auto min-h-screen px-6 py-10 text-red-500">
         Error loading leaderboard data
       </div>
     );
@@ -74,7 +75,7 @@ export default function Leaderboard() {
 
   return (
     <div
-      className={`container mx-auto px-6 py-10 ${
+      className={`container mx-auto min-h-screen px-6 py-10 ${
         theme === "dark" ? "text-white" : "text-gray-900"
       }`}
     >
@@ -115,7 +116,7 @@ export default function Leaderboard() {
                 theme === "dark" ? "text-gray-400" : "text-gray-600"
               } text-sm`}
             >
-              {leaderboardData[0]?.totalPrizeEarning || 0} coins earned
+              {leaderboardData[0]?.totalPrizeEarning || 0} $ earned
             </p>
           </div>
 
@@ -158,7 +159,7 @@ export default function Leaderboard() {
                 theme === "dark" ? "text-gray-400" : "text-gray-600"
               } text-sm`}
             >
-              Coins distributed
+              $ distributed
             </p>
           </div>
         </div>
@@ -313,7 +314,7 @@ export default function Leaderboard() {
                           } mr-2`}
                         />
                         <span className="text-sm font-medium">
-                          {entry.totalPrizeEarning} coins
+                          {entry.totalPrizeEarning}$
                         </span>
                       </div>
                     </td>
@@ -335,9 +336,9 @@ export default function Leaderboard() {
           >
             Ready to climb the leaderboard?
           </p>
-          <button className="bg-purple-600 text-white py-3 px-8 rounded-full hover:bg-purple-700 transition-colors">
+          <Link to="/all-contests" className="bg-purple-600 text-white py-3 px-8 rounded-full hover:bg-purple-700 transition-colors">
             Join Contests
-          </button>
+          </Link>
         </div>
       )}
     </div>

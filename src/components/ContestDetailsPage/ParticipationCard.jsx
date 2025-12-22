@@ -16,11 +16,8 @@ export default function ParticipationCard({
   const { user } = useAuth();
   const { theme } = useTheme();
   // Check if this submission belongs to the current user
-  const isCurrentUser = submission.userId === currentUserId;
+  const isCurrentUser = submission.userId._id === currentUserId;
   const queryClient = useQueryClient();
-
-  // Get user display name from submission data
-  const userName = user?.name || "Anonymous";
 
   // Format submission date
   const submissionDate = new Date(submission.createdAt).toLocaleString();
@@ -72,9 +69,7 @@ export default function ParticipationCard({
   return (
     <div
       className={`rounded-lg p-4 w-full border-2 transition-all duration-300 ${
-        isCurrentUser
-          ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 shadow-lg ring-2 ring-indigo-200 dark:ring-indigo-800"
-          : `${borderColor} ${cardBg} ${hoverShadow}`
+        isCurrentUser ? "" : `${borderColor} ${cardBg} ${hoverShadow}`
       }
       ${isWinner ? "ring-4 ring-offset-purple-800" : ""}
       `}
@@ -84,10 +79,18 @@ export default function ParticipationCard({
         <div className="flex items-center gap-3">
           <div
             className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              isCurrentUser ? "bg-indigo-500 text-white" : userBg
+              isCurrentUser ? "bg-indigo-100 text-white" : userBg
             }`}
           >
-            <FaUser className="text-lg" />
+            {submission?.userId?.profileImage ? (
+              <img
+                src={submission.userId.profileImage}
+                alt={submission.userId.name}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            ) : (
+              <FaUser className="text-lg" />
+            )}
           </div>
           <div>
             <h3
@@ -95,7 +98,7 @@ export default function ParticipationCard({
                 isCurrentUser ? "text-indigo-700 dark:text-indigo-300" : ""
               }`}
             >
-              {userName}
+              {submission?.userId?.name}
             </h3>
             {isCurrentUser && (
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
@@ -131,8 +134,8 @@ export default function ParticipationCard({
           >
             <img
               src={submission.submissionImg}
-              alt={`${userName}'s submission`}
-              className=" object-cover transition-transform duration-300 group-hover:scale-105"
+              alt={`${submission.userId.name}'s submission`}
+              className=" object-cover transition-transform duration-300 group-hover:scale-105 w-100 h-20 md:h-40 lg:h-full"
               onError={(e) => {
                 e.target.style.display = "none";
                 const fallback = e.target.nextElementSibling;
@@ -198,11 +201,11 @@ export default function ParticipationCard({
             <span
               className={`px-2 py-1 rounded ${
                 isCurrentUser
-                  ? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300"
+                  ? "bg-indigo-100 text-indigo-700 "
                   : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
               }`}
             >
-              {isWinner ? "Contest Winner" : "Submitted"}
+              {isWinner ? "Contest Winner" : isCurrentUser && "Submitted"}
             </span>
           )}
         </div>
@@ -212,7 +215,7 @@ export default function ParticipationCard({
       <ConfirmModal
         isOpen={showConfirmModal}
         title="Declare Winner"
-        message={`Are you sure you want to declare ${userName} as the winner of this contest? This action cannot be undone.`}
+        message={`Are you sure you want to declare ${submission.userId.name} as the winner of this contest? This action cannot be undone.`}
         onConfirm={confirmWinner}
         onCancel={() => setShowConfirmModal(false)}
         confirmText="Declare Winner"
