@@ -1,7 +1,6 @@
-import { createBrowserRouter } from "react-router"; 
+import { createBrowserRouter } from "react-router";
 import { lazy, Suspense } from "react";
 import MainLayout from "../layouts/MainLayout";
-
 
 // 1. Keep Layouts and critical components as standard imports
 import PrivateRoute from "../PrivateRoutes/PrivateRoute";
@@ -15,11 +14,16 @@ const CreatorProfile = lazy(() => import("../pages/CreatorProfile"));
 const UserProfilePage = lazy(() => import("../pages/UserProfilePage"));
 const About = lazy(() => import("../pages/About"));
 const Login = lazy(() => import("../components/loginRegistration/Login"));
-const Registration = lazy(() => import("../components/loginRegistration/Registration"));
-const EmailVerify = lazy(() => import("../components/loginRegistration/EmailVerify"));
+const Registration = lazy(() =>
+  import("../components/loginRegistration/Registration")
+);
+const EmailVerify = lazy(() =>
+  import("../components/loginRegistration/EmailVerify")
+);
 const ManageUsers = lazy(() => import("../pages/ManageUsers"));
 const Leaderboard = lazy(() => import("../pages/Leaderboard"));
 const PaymentSuccess = lazy(() => import("../pages/PaymentSuccess"));
+const PaymentFailed = lazy(() => import("../pages/PaymentFailed"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 
 let router = createBrowserRouter([
@@ -98,12 +102,10 @@ let router = createBrowserRouter([
         path: "/leaderboard",
         element: <Leaderboard />,
       },
-      {
-        path: "/payment-success",
-        element: <PaymentSuccess />,
-      },
     ],
   },
+  { path: "/payment/success", element: <PaymentSuccess /> },
+  { path: "/payment/failed", element: <PaymentFailed /> },
   {
     path: "*",
     element: <NotFound />,

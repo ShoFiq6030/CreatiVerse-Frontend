@@ -23,7 +23,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative top-13 bg-linear-to-r from-purple-600 via-pink-500 to-red-400 text-white">
+    <section className=" bg-linear-to-r from-purple-600 via-pink-500 to-red-400 text-white">
       <div className="container mx-auto px-6 py-20 md:py-32">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-extrabold drop-shadow-lg">
@@ -36,7 +36,7 @@ export default function HeroSection() {
 
           <form
             onSubmit={searchContests}
-            className="mt-8 bg-white/10 backdrop-blur-sm rounded-full p-2 flex flex-col md:flex-row items-center gap-3 max-w-3xl mx-auto shadow-lg"
+            className="mt-8 md:bg-white/10 md:backdrop-blur-sm md:rounded-full p-2 flex flex-col md:flex-row items-center gap-3 max-w-3xl mx-auto shadow-lg"
           >
             <div className="flex items-center gap-3 flex-1 px-4">
               <FiSearch className="text-white text-xl " size={25} />

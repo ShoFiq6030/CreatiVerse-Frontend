@@ -6,9 +6,9 @@ import Loading from "../components/common/Loading";
 
 export default function MainLayout() {
   return (
-    <div>
+    <>
       <NavBar />
-      <main className="">
+      <main className=" mt-13">
         <Suspense
           fallback={
             <div className="h-screen w-full flex justify-center items-center">
@@ -22,6 +22,6 @@ export default function MainLayout() {
         {/* <Outlet /> */}
       </main>
       <Footer />
-    </div>
+    </>
   );
 }
