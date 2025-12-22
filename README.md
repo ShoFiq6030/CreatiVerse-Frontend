@@ -1,28 +1,120 @@
-# React + Vite
+# CreatiVerse — Frontend 🎨
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**CreatiVerse** is the frontend for a contest & creator-driven platform built with React and Vite. This repository provides the client-side application used by creators and participants to browse contests, submit entries, view leaderboards, and manage profiles.
 
 ---
 
-## Banner (Hero) Section — Added
+## 🔗 Live & API Links
 
-✅ Replaced the old `Hero` / `HeroSlider` with a new **Banner Section** located at `src/components/home/Hero.jsx`.
+- **Frontend (Live)**: https://creati-verse-frontend.vercel.app/
+- **Backend (Live)**: https://creati-verse-backend.vercel.app/
+- **API Documentation**: https://documenter.getpostman.com/view/26622927/2sB3dWsnYx
 
-- Large, attractive banner with a search bar.
-- Search queries `GET /get-contests` using query params `search` and `type`.
-- Results are previewed under the banner using `ContestCard` components, and you can click "See all results" to go to `/all-contests` with the same query params.
+---
 
-Usage note: The search uses the existing `axiosSecure` instance (base URL from `VITE_API_BASE_URL`).
+## 🚀 Features
+
+- Browse and filter contests with search and categories
+- Create / Update contests (Creator flow)
+- Submit entries and view contest details
+- User authentication and profile management
+- Payments and participation confirmation flows
+- Responsive UI with theme toggle
+
+---
+
+## 🧰 Tech Stack
+
+- **Frontend**: React, Vite, React Router
+- **Styling**: CSS, Tailwind (if applicable)
+- **HTTP Client**: axios (see `src/api/axiosSecure.jsx`)
+- **State & Context**: React Context (Auth, Theme)
+
+---
+
+## 💻 Local Setup
+
+### Prerequisites
+
+- Node.js (v16+ recommended)
+- npm or yarn
+
+### Install
+
+```bash
+git clone <this-repo-url>
+cd assignment-11-frontend
+npm install
+# or
+# yarn install
+```
+
+### Environment
+
+Create a `.env.local` file in the project root and add the required environment variables. Example:
+
+```text
+VITE_API_BASE_URL=https://creati-verse-backend.vercel.app
+# Add other keys (e.g., VITE_FIREBASE_* , CLOUDINARY_*) as needed
+```
+
+> Make sure `VITE_API_BASE_URL` points to the backend you want to use (local or live).
+
+### Run (Development)
+
+```bash
+npm run dev
+# or
+# yarn dev
+```
+
+Open http://localhost:5173 (or the port shown in terminal) to view the app.
+
+### Build
+
+```bash
+npm run build
+# or
+# yarn build
+```
+
+---
+
+## 📁 Project Structure (Highlights)
+
+- `src/` — application source
+  - `components/` — reusable UI components
+  - `pages/` — route pages (Home, AllContest, ContestDetails, Profile, etc.)
+  - `api/axiosSecure.jsx` — axios instance for API calls
+  - `context/` — auth & theme contexts
+  - `layouts/` — main layout components
+  - `router/Router.jsx` — app routes
+
+---
+
+## 🧪 Tests
+
+(No automated tests included in the current scaffold.)
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please open issues for bugs or feature requests and submit PRs with clear descriptions of changes.
+
+---
+
+## 📝 Notes
+
+- Refer to the **API Documentation** (link above) for available endpoints, request/response formats, and authentication details.
+- If you run into CORS or auth-related issues running against the live backend, check that your `VITE_API_BASE_URL` and auth tokens are configured correctly.
+
+---
+
+## 📬 Contact
+
+For questions about the frontend, open an issue on this repo or contact the maintainer in your project team.
+
+---
+
+**Enjoy building CreatiVerse!** ✅
