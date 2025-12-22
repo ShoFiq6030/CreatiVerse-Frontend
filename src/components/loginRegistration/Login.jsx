@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axiosSecure from "../../api/axiosSecure";
 import Loading from "../common/Loading";
-import { useLocation, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { useToast } from "../../provider/ToastProvider";
 import useAuth from "../../hooks/useAuth";
+import { useTheme } from "./../../hooks/useTheme";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -12,6 +13,7 @@ export default function Login() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const { theme } = useTheme();
 
   const { success, error: showError } = useToast();
   const { login, googleSignin, setUser } = useAuth();
@@ -178,6 +180,26 @@ export default function Login() {
             type="password"
             className="input input-bordered"
           />
+          <div>
+            <Link
+              to="/reset-password"
+              className={`text-sm ${
+                theme === "dark" ? "text-white" : "text-black"
+              }`}
+            >
+              Forgot Password?
+            </Link>
+            <p
+              className={`text-sm ${
+                theme === "dark" ? "text-white" : "text-black"
+              }`}
+            >
+              Don't have an account?{" "}
+              <Link to="/registration" className="underline">
+                Register
+              </Link>
+            </p>
+          </div>
 
           {error && <p className="text-red-500">{error}</p>}
 

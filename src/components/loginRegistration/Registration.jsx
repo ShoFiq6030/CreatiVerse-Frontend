@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import axiosSecure from "../../api/axiosSecure";
 import { photoUploadToCloudinary } from "../../utils/imgUploadToCloudinary";
 import Loading from "../common/Loading";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useToast } from "../../provider/ToastProvider";
 import useAuth from "../../hooks/useAuth";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function Registration() {
   const [name, setName] = useState("");
@@ -16,6 +17,7 @@ export default function Registration() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const { theme } = useTheme();
 
   const { success, error: showError } = useToast();
   const { setUser, googleSignin } = useAuth();
@@ -209,16 +211,27 @@ export default function Registration() {
               <img src={preview} alt="preview" className="w-24 h-24 rounded" />
             )}
           </div>
-
-          <label className="flex items-center gap-2 mt-2">
-            <input
-              type="checkbox"
-              className="checkbox"
-              checked={isCreator}
-              onChange={(e) => setIsCreator(e.target.checked)}
-            />
-            <span className="">Sign up as creator</span>
-          </label>
+          <div className="flex justify-between items-center">
+            <label className="flex items-center gap-2 mt-2">
+              <input
+                type="checkbox"
+                className="checkbox"
+                checked={isCreator}
+                onChange={(e) => setIsCreator(e.target.checked)}
+              />
+              <span className="">Sign up as creator</span>
+            </label>
+          </div>
+          <p
+            className={`text-sm ${
+              theme === "dark" ? "text-white" : "text-black"
+            }`}
+          >
+            already have an account?{" "}
+            <Link to="/login" className="underline">
+              Login
+            </Link>
+          </p>
 
           {error && <p className="text-red-500">{error}</p>}
 
