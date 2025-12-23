@@ -59,7 +59,7 @@ export default function ContestDetails() {
       return res.data.data;
     },
   });
-  console.log(paymentData);
+  // console.log(paymentData);
 
   const userAlreadyParticipate = () => {
     const found = submissionData?.find(
@@ -146,9 +146,14 @@ export default function ContestDetails() {
     setOpenModal(true);
   };
 
-  if (isLoading) return <Loading />;
+  if (isLoading)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loading />
+      </div>
+    );
   if (contestError)
-    return <p className="text-red-500">Error loading contest.</p>;
+    return <p className="text-red-500 min-h-screen flex items-center justify-center">Error loading contest.</p>;
 
   const contest = data;
 

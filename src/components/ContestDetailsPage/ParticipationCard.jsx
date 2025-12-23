@@ -18,6 +18,7 @@ export default function ParticipationCard({
   // Check if this submission belongs to the current user
   const isCurrentUser = submission.userId._id === currentUserId;
   const queryClient = useQueryClient();
+  // console.log(submission);
 
   // Format submission date
   const submissionDate = new Date(submission.createdAt).toLocaleString();
@@ -34,11 +35,11 @@ export default function ParticipationCard({
 
   const confirmWinner = async () => {
     if (!selectedSubmission) return;
-
+    console.log(selectedSubmission);
     setLoading(true);
     try {
       const response = await axiosSecure.patch(
-        `/contest/declare-winner/${contest._id}/${selectedSubmission.userId}/${selectedSubmission._id}`
+        `/contest/declare-winner/${contest._id}/${selectedSubmission.userId._id}/${selectedSubmission._id}`
       );
 
       success(response.data.message || "Winner declared successfully!");
@@ -181,7 +182,7 @@ export default function ParticipationCard({
           className={`flex justify-between items-center text-xs ${textSecondary}`}
         >
           <span>Submission ID: {submission._id?.slice(-6)}</span>
-          {contest.creator === user._id || user?.role === "admin" ? (
+          {contest.creator._id === user._id || user?.role === "admin" ? (
             <button
               onClick={() => handleSubmitWinner(submission)}
               className={`px-2 py-1 rounded   ${
