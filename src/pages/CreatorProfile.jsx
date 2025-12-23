@@ -18,6 +18,8 @@ export default function CreatorProfile() {
   const [editing, setEditing] = useState(false);
   const [contestModalOpen, setContestModalOpen] = useState(false);
   const [selectedContest, setSelectedContest] = useState(null);
+  const [openEditProfileModal, setOpenEditProfileModal] = useState(false);
+  const [openEditPasswordModal, setOpenEditPasswordModal] = useState(false);
   const { userId } = useParams();
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -32,16 +34,22 @@ export default function CreatorProfile() {
       return res.data.data;
     },
   });
-  const {
-    data: userContest,
-  } = useQuery({
+  const { data: userContest } = useQuery({
     queryKey: ["contests", userId],
     queryFn: async () => {
       const res = await axiosSecure.get(`contest/get-contests-auth`);
       return res.data.data;
     },
   });
-  console.log(userContest);
+  // console.log(userContest);
+
+  const handleEdit = (value) => {
+    if (value === "profile") {
+      setOpenEditProfileModal(true);
+    } else if (value === "password") {
+      setOpenEditPasswordModal(true);
+    }
+  };
 
   if (user.role !== "creator") {
     return (
@@ -69,29 +77,53 @@ export default function CreatorProfile() {
     userContest?.contests?.filter((c) => c.status === "approved") || [];
   const completeContest =
     userContest?.contests?.filter((c) => c.status === "completed") || [];
-    console.log(completeContest);
+  console.log(completeContest);
 
-      const stats =  { contests: userContest?.contests?.length || 0, approved: approvedContest?.length || 0, completed: completeContest?.length || 0 };
-
+  const stats = {
+    contests: userContest?.contests?.length || 0,
+    approved: approvedContest?.length || 0,
+    completed: completeContest?.length || 0,
+  };
 
   return (
-    <div className={`container mx-auto px-6 py-10 ${wrapperBg}`}>
+    <div className={`container mx-auto min-h-screen px-6 py-10 ${wrapperBg}`}>
       <div className="mb-4">
         <span className="inline-block px-3 py-1 text-xs font-semibold bg-purple-100 text-purple-800 rounded-full">
           Creator
         </span>
       </div>
 
-      <ProfileHeader user={data} onEdit={() => setEditing(true)} />
+      <ProfileHeader user={data} onEdit={handleEdit} />
+      {/* profile edit modal  */}
+      {openEditProfileModal && (
+        <ModalWrapper
+          title={"Profile Edit Form"}
+          isOpen={true}
+          onClose={() => setOpenEditProfileModal(false)}
+        >
+          <EditProfileForm
+            editValue="profile"
+            user={data}
+            onClose={() => setOpenEditProfileModal(false)}
+          />
+        </ModalWrapper>
+      )}
 
-      <ModalWrapper
-        isOpen={editing}
-        title="Edit Profile"
-        onClose={() => setEditing(false)}
-      >
-        <EditProfileForm user={data} onClose={() => setEditing(false)} />
-      </ModalWrapper>
-
+      {/* password change modal  */}
+      {openEditPasswordModal && (
+        <ModalWrapper
+          title={"Change Password"}
+          isOpen={true}
+          onClose={() => setOpenEditPasswordModal(false)}
+        >
+          <EditProfileForm
+            editValue="password"
+            user={data}
+            onClose={() => setOpenEditPasswordModal(false)}
+          />
+        </ModalWrapper>
+      )}
+      {/* create contest  */}
       <ModalWrapper
         isOpen={contestModalOpen}
         title={selectedContest ? "Edit Contest" : "Create Contest"}
@@ -115,91 +147,69 @@ export default function CreatorProfile() {
 
       <div className="grid md:grid-cols-3 gap-6 mb-6">
         <div className="md:col-span-2">
-          <ProfileTabs
-            children={{
-              overview: (
-                <div className="space-y-6">
-                  <div className="mb-4">
-                    <ProfileStats stats={stats} />
-                  </div>
-
-                  <div>
-                    <h3 className="text-xl font-semibold mb-3">
-                      Pending Contests
-                    </h3>
-                    {pendingContest.length ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {pendingContest.map((s) => (
-                          <ContestCard 
-                            key={s._id} 
-                            contest={s} 
-                            onEdit={(contest) => {
-                              setSelectedContest(contest);
-                              setContestModalOpen(true);
-                            }}
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm">
-                        You have no pending contests.
-                      </p>
-                    )}
-                  </div>
+          <ProfileTabs>
+            <div participated>
+              <div className="space-y-6">
+                <div className="mb-4">
+                  <ProfileStats stats={stats} />
                 </div>
-              ),
-              submissions: (
+
                 <div>
-                  <h3 className="text-lg font-semibold mb-3">My Submissions</h3>
-                  {approvedContest.length ? (
+                  <h3 className="text-xl font-semibold mb-3">
+                    Pending Contests
+                  </h3>
+                  {pendingContest.length ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {approvedContest.map((s) => (
-                        <ContestCard key={s._id} contest={s} />
+                      {pendingContest.map((s) => (
+                        <ContestCard
+                          key={s._id}
+                          contest={s}
+                          onEdit={(contest) => {
+                            setSelectedContest(contest);
+                            setContestModalOpen(true);
+                          }}
+                        />
                       ))}
                     </div>
                   ) : (
-                    <p>No submissions yet.</p>
+                    <p className="text-sm">You have no pending contests.</p>
                   )}
                 </div>
-              ),
-              complete: (
-                <div>
-                  <h3 className="text-lg font-semibold mb-3">Completed Contests</h3>
-                  {completeContest?.length ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {completeContest?.map((s) => ( 
-                        <ContestCard key={s._id} contest={s} />
-                      ))}
-                    </div>
-                  ) : ( 
-                    <p>No completed contests yet.</p>
-                  )}
-                </div>
-              ),
-              // settings: (
-              //   <div className="max-w-xl">
-              //     {editing ? (
-              //       <EditProfileForm
-              //         user={data}
-              //         onClose={() => setEditing(false)}
-              //       />
-              //     ) : (
-              //       <div>
-              //         <p className="mb-2">Name: {data?.name || "-"}</p>
-              //         <p className="mb-2">Email: {data?.email || "-"}</p>
-              //         <p className="mb-2">Role: {data?.role || "-"}</p>
-              //         <button
-              //           className="btn mt-3"
-              //           onClick={() => setEditing(true)}
-              //         >
-              //           Edit
-              //         </button>
-              //       </div>
-              //     )}
-              //   </div>
-              // ),
-            }}
-          />
+              </div>
+            </div>
+
+            <div winning>
+              <div>
+                <h3 className="text-lg font-semibold mb-3">My Submissions</h3>
+                {approvedContest.length ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {approvedContest.map((s) => (
+                      <ContestCard key={s._id} contest={s} />
+                    ))}
+                  </div>
+                ) : (
+                  <p>No submissions yet.</p>
+                )}
+              </div>
+            </div>
+
+            <div profile>
+              <div>
+                <h3 className="text-lg font-semibold mb-3">
+                  Completed Contests
+                </h3>
+                {completeContest?.length ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {completeContest?.map((s) => (
+                      <ContestCard key={s._id} contest={s} />
+                    ))}
+                  </div>
+                ) : (
+                  <p>No completed contests yet.</p>
+                )}
+              </div>
+            </div>
+          </ProfileTabs>
         </div>
 
         <aside className="md:col-span-1">
@@ -213,7 +223,7 @@ export default function CreatorProfile() {
 
             <div className="p-4 rounded-lg shadow">
               <h4 className="font-semibold mb-2">Creator Tools</h4>
-              <button 
+              <button
                 className="btn w-full mb-2 bg-indigo-600 text-white hover:bg-indigo-700"
                 onClick={() => setContestModalOpen(true)}
               >

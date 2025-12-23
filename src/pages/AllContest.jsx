@@ -329,7 +329,7 @@ export default function AllContest() {
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : data?.contests?.length ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {data?.contests?.map((contest) => (
             <ContestCard
               key={contest._id}
@@ -342,8 +342,9 @@ export default function AllContest() {
           ))}
         </div>
       ) : (
-        <div className="h-screen"><p>No contests found. Try a different search or filter.</p></div>
-        
+        <div className="h-screen">
+          <p>No contests found. Try a different search or filter.</p>
+        </div>
       )}
       {data?.total === data?.contests?.length || (
         <div

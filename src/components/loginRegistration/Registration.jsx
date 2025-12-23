@@ -77,7 +77,8 @@ export default function Registration() {
       const res = await axiosSecure.post("/auth/register", payload);
       if (res?.data?.success) {
         success("Registration successful — check your email for the code");
-        navigate("/verify-email", { state: { email } });
+        // navigate("/verify-email", { state: { email } });
+        navigate("/login");
       } else {
         setError(res?.data?.message || "Registration failed");
         showError(res?.data?.message || "Registration failed");

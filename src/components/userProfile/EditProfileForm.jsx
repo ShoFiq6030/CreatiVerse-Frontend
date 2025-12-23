@@ -5,7 +5,7 @@ import axiosSecure from "../../api/axiosSecure";
 import { useParams } from "react-router";
 import { photoUploadToCloudinary } from "../../utils/imgUploadToCloudinary";
 
-export default function EditProfileForm({ user, onClose }) {
+export default function EditProfileForm({ user, onClose, editValue }) {
   const [name, setName] = useState(user?.name || "");
   const [oldPassword, setOldPassword] = useState("");
   const [password, setPassword] = useState("");
@@ -31,16 +31,17 @@ export default function EditProfileForm({ user, onClose }) {
         name,
         bio,
       };
-
-      if (oldPassword || password || profileImage) {
-        (payload.oldPassword = oldPassword),
-          (payload.password = password),
-          (payload.profileImage = imageUrl);
+      if (imageUrl) {
+        payload.profileImage = imageUrl;
+      }
+      if (editValue === "password") {
+        payload.oldPassword = oldPassword;
+        payload.password = password;
       }
 
       const res = await axiosSecure.patch(`/users/profile/${userId}`, payload);
       setUser({ ...user, ...res.data.data });
-      success("Profile updated");
+      success(editValue === "profile" ? "Profile updated" : "Password changed");
       onClose?.();
     } catch (err) {
       error(err.message || "Failed to update profile");
@@ -66,15 +67,17 @@ export default function EditProfileForm({ user, onClose }) {
   return (
     <div className="">
       <form onSubmit={handleSubmit} className="space-y-3">
-        <div>
-          <label className="text-sm">Full name</label>
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="input input-bordered w-full"
-          />
-        </div>
-        {user.provider !== "google" && (
+        {editValue === "profile" && (
+          <div>
+            <label className="text-sm">Full name</label>
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="input input-bordered w-full"
+            />
+          </div>
+        )}
+        {user.provider !== "google" && editValue === "password" && (
           <>
             <div>
               <label className="text-sm">Old Password</label>
@@ -97,32 +100,37 @@ export default function EditProfileForm({ user, onClose }) {
           </>
         )}
 
-        <div>
-          <label className="text-sm">Profile Image</label>
-          <input
-            type="file"
-            onChange={handleImageChange}
-            className="file-input file-input-bordered w-full"
-          />
-          {imagePreview && (
-            <div className="mt-2">
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-20 h-20 object-cover rounded-full"
+        {editValue === "profile" && (
+          <>
+            {" "}
+            <div>
+              <label className="text-sm">Profile Image</label>
+              <input
+                type="file"
+                onChange={handleImageChange}
+                className="file-input file-input-bordered w-full"
+              />
+              {imagePreview && (
+                <div className="mt-2">
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-20 h-20 object-cover rounded-full"
+                  />
+                </div>
+              )}
+            </div>
+            <div>
+              <label className="text-sm">Bio</label>
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                className="textarea textarea-bordered w-full"
+                rows={4}
               />
             </div>
-          )}
-        </div>
-        <div>
-          <label className="text-sm">Bio</label>
-          <textarea
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            className="textarea textarea-bordered w-full"
-            rows={4}
-          />
-        </div>
+          </>
+        )}
         <div className="flex gap-2">
           <button
             className="btn bg-indigo-600 text-white"

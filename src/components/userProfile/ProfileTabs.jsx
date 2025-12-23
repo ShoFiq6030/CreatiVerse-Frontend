@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { useTheme } from "../../hooks/useTheme";
+import useAuth from "../../hooks/useAuth";
 
 export default function ProfileTabs({ children }) {
   const [tab, setTab] = useState("participated");
   const { theme } = useTheme();
+  const { user } = useAuth();
   const active =
     theme === "dark" ? "bg-indigo-600 text-white" : "bg-indigo-600 text-white";
 
@@ -32,7 +34,9 @@ export default function ProfileTabs({ children }) {
           }`}
           onClick={() => setTab("participated")}
         >
-          My Participated Contests
+          {user.role === "user" && "My Participated Contests"}
+          {user.role === "creator" && "My Pending Contests"}
+          {user.role === "admin" && "Pending Contests"}
         </button>
         <button
           className={`px-4 py-2 rounded-lg cursor-pointer font-medium transition-all duration-200 ${
@@ -42,7 +46,9 @@ export default function ProfileTabs({ children }) {
           }`}
           onClick={() => setTab("winning")}
         >
-          My Winning Contests
+          {user.role === "user" && "My Winning Contests"}
+          {user.role === "creator" && "My Approved Contests"}
+          {user.role === "admin" && "Latest Approved"}
         </button>
         <button
           className={`px-4 py-2 rounded-lg cursor-pointer font-medium transition-all duration-200 ${
@@ -52,7 +58,9 @@ export default function ProfileTabs({ children }) {
           }`}
           onClick={() => setTab("profile")}
         >
-          My Profile
+          {user.role === "user" && "My Profile"}
+          {user.role === "creator" && "Completed Contests"}
+          {user.role === "admin" && "All Completed Contests"}
         </button>
       </div>
 

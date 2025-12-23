@@ -13,21 +13,13 @@ import { useTheme } from "../../hooks/useTheme";
 import useAuth from "../../hooks/useAuth";
 import axiosSecure from "../../api/axiosSecure";
 import ConfirmModal from "./ConfirmModal";
-import { useQuery } from "@tanstack/react-query";
+import {  useQueryClient } from "@tanstack/react-query";
 
 export default function ContestCard({ contest, onEdit, onDelete }) {
   const [timeLeft, setTimeLeft] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const { theme } = useTheme();
-
-  const { data: userData } = useQuery({
-    queryKey: ["user", contest.creator],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/users/profile/${contest.creator}`);
-      return res.data.data;
-    },
-  });
-  console.log(userData);
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     const calculateTimeLeft = () => {
@@ -72,6 +64,8 @@ export default function ContestCard({ contest, onEdit, onDelete }) {
   const metaText = theme === "dark" ? "text-gray-300" : "text-gray-600";
   const mutedBg = theme === "dark" ? "bg-gray-700/50" : "bg-white/70";
   const { user } = useAuth();
+  // console.log(user);
+  // console.log(contest);
 
   // Delete contest function
   const handleDelete = async () => {
@@ -79,11 +73,13 @@ export default function ContestCard({ contest, onEdit, onDelete }) {
       const response = await axiosSecure.delete(
         `/contest/delete-contest/${contest._id}`
       );
+
       if (response.data.success) {
         setShowDeleteModal(false);
         if (onDelete) {
           onDelete(contest._id);
         }
+        queryClient.invalidateQueries({ queryKey: ['contests'] })
       } else {
         // Handle error case - could show error in modal or console
         console.error(response.data.message || "Failed to delete contest");
@@ -145,16 +141,7 @@ export default function ContestCard({ contest, onEdit, onDelete }) {
             <div className="space-y-1 text-sm">
               {/* creator details  */}
               <div>
-                <p className={`flex items-center gap-2 ${metaText}`}>
-                  <FaUser className="text-sm" aria-hidden />
-                  <span>
-                    CreatorId:{" "}
-                    <strong className="font-semibold">
-                      {contest?.creator}
-                    </strong>
-                  </span>
-                </p>
-                {userData && user.role === "admin" && (
+                {contest?.creator?.name && (
                   <>
                     <div>
                       <p className={`flex items-center gap-2 ${metaText}`}>
@@ -162,7 +149,7 @@ export default function ContestCard({ contest, onEdit, onDelete }) {
                         <span>
                           Name:{" "}
                           <strong className="font-semibold">
-                            {userData?.name}
+                            {contest?.creator?.name}
                           </strong>
                         </span>
                       </p>
@@ -174,7 +161,7 @@ export default function ContestCard({ contest, onEdit, onDelete }) {
                         <span>
                           Email:{" "}
                           <strong className="font-semibold">
-                            {userData?.email}
+                            {contest?.creator?.email}
                           </strong>
                         </span>
                       </p>
@@ -208,7 +195,7 @@ export default function ContestCard({ contest, onEdit, onDelete }) {
                 to={`/contest/${contest._id}`}
                 className="inline-block px-3 py-2 rounded-md bg-purple-600 text-white text-sm font-medium hover:bg-purple-700 transition"
               >
-                {user?.role === "creator" && user?._id === contest.creator
+                {user?.role === "creator" && user?._id === contest.creator._id
                   ? "submissions"
                   : " Details"}
               </Link>
@@ -235,17 +222,25 @@ export default function ContestCard({ contest, onEdit, onDelete }) {
               )}
 
               {/* Creator can delete only their own contest when status is pending */}
-              {user?.role === "creator" &&
-                user?._id === contest.creator &&
+              {user?._id === contest.creator._id &&
                 contest.status === "pending" && (
-                  <button
-                    onClick={() => setShowDeleteModal(true)}
-                    className="btn btn-sm btn-outline btn-error w-full flex items-center gap-2"
-                    title="Delete contest"
-                  >
-                    <FaTrash className="text-sm" />
-                    Delete
-                  </button>
+                  <>
+                    <button
+                      onClick={() => onEdit?.(contest)}
+                      className="btn btn-sm btn-outline w-full"
+                      title="Edit contest"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => setShowDeleteModal(true)}
+                      className="btn btn-sm btn-outline btn-error w-full flex items-center gap-2"
+                      title="Delete contest"
+                    >
+                      <FaTrash className="text-sm" />
+                      Delete
+                    </button>
+                  </>
                 )}
             </div>
           </div>

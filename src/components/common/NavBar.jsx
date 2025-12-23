@@ -141,7 +141,7 @@ export default function NavBar() {
                 >
                   <li>
                     <Link to={navigateTo()} className="justify-between">
-                      dashboard
+                      Dashboard
                     </Link>
                   </li>
                   {/* <li>

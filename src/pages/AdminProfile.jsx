@@ -18,6 +18,8 @@ export default function AdminProfile() {
   const [editing, setEditing] = useState(false);
   const [contestModalOpen, setContestModalOpen] = useState(false);
   const [selectedContest, setSelectedContest] = useState(null);
+  const [openEditProfileModal, setOpenEditProfileModal] = useState(false);
+  const [openEditPasswordModal, setOpenEditPasswordModal] = useState(false);
   const { userId } = useParams();
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -40,6 +42,14 @@ export default function AdminProfile() {
       return res.data.data;
     },
   });
+
+  const handleEdit = (value) => {
+    if (value === "profile") {
+      setOpenEditProfileModal(true);
+    } else if (value === "password") {
+      setOpenEditPasswordModal(true);
+    }
+  };
   console.log(userContest);
   if (user.role !== "admin") {
     return (
@@ -93,16 +103,36 @@ export default function AdminProfile() {
         </span>
       </div>
 
-      <ProfileHeader user={data} onEdit={() => setEditing(true)} />
-
-      <ModalWrapper
-        isOpen={editing}
-        title="Edit Profile"
-        onClose={() => setEditing(false)}
-      >
-        <EditProfileForm user={data} onClose={() => setEditing(false)} />
-      </ModalWrapper>
-
+      <ProfileHeader user={data} onEdit={handleEdit} />
+      {/* profile edit modal  */}
+      {openEditProfileModal && (
+        <ModalWrapper
+          title={"Profile Edit Form"}
+          isOpen={true}
+          onClose={() => setOpenEditProfileModal(false)}
+        >
+          <EditProfileForm
+            editValue="profile"
+            user={data}
+            onClose={() => setOpenEditProfileModal(false)}
+          />
+        </ModalWrapper>
+      )}
+      {/* password change modal  */}
+      {openEditPasswordModal && (
+        <ModalWrapper
+          title={"Change Password"}
+          isOpen={true}
+          onClose={() => setOpenEditPasswordModal(false)}
+        >
+          <EditProfileForm
+            editValue="password"
+            user={data}
+            onClose={() => setOpenEditPasswordModal(false)}
+          />
+        </ModalWrapper>
+      )}
+      {/* create contest  */}
       <ModalWrapper
         isOpen={contestModalOpen}
         title={selectedContest ? "Edit Contest" : "Create Contest"}
@@ -127,43 +157,20 @@ export default function AdminProfile() {
 
       <div className="grid md:grid-cols-3 gap-6 mb-6">
         <div className="md:col-span-2">
-          <ProfileTabs
-            children={{
-              overview: (
-                <div className="space-y-6">
-                  <div className="mb-4">
-                    {/* <ProfileStats stats={stats} /> */}
-                  </div>
+          <ProfileTabs>
+            <div participated>
+              <div className="space-y-6">
+                <div className="mb-4">
+                  {/* <ProfileStats stats={stats} /> */}
+                </div>
 
-                  <div>
-                    <h3 className="text-xl font-semibold mb-3">
-                      Pending Contests
-                    </h3>
-                    {pendingContest.length ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {pendingContest.map((s) => (
-                          <ContestCard
-                            key={s._id}
-                            contest={s}
-                            onEdit={(contest) => {
-                              setSelectedContest(contest);
-                              setContestModalOpen(true);
-                            }}
-                          />
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-sm">No pending contests.</p>
-                    )}
-                  </div>
-                </div>
-              ),
-              submissions: (
                 <div>
-                  <h3 className="text-lg font-semibold mb-3">Latest Approved Contests</h3>
-                  {approvedContest.length ? (
+                  <h3 className="text-xl font-semibold mb-3">
+                    Pending Contests
+                  </h3>
+                  {pendingContest.length ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {approvedContest.map((s) => (
+                      {pendingContest.map((s) => (
                         <ContestCard
                           key={s._id}
                           contest={s}
@@ -175,33 +182,60 @@ export default function AdminProfile() {
                       ))}
                     </div>
                   ) : (
-                    <p>No contests yet.</p>
+                    <p className="text-sm">No pending contests.</p>
                   )}
                 </div>
-              ),
-              complete: (
-                  <div>
-                  <h3 className="text-lg font-semibold mb-3">Latest Completed Contests</h3>
-                  {completeContest.length ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {completeContest.map((s) => (
-                        <ContestCard
-                          key={s._id}
-                          contest={s}
-                          onEdit={(contest) => {
-                            setSelectedContest(contest);
-                            setContestModalOpen(true);
-                          }}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <p>No contests yet.</p>
-                  )}
-                </div>
-              ),
-            }}
-          />
+              </div>
+            </div>
+
+            <div winning>
+              <div>
+                <h3 className="text-lg font-semibold mb-3">
+                  Latest Approved Contests
+                </h3>
+                {approvedContest.length ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {approvedContest.map((s) => (
+                      <ContestCard
+                        key={s._id}
+                        contest={s}
+                        onEdit={(contest) => {
+                          setSelectedContest(contest);
+                          setContestModalOpen(true);
+                        }}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p>No contests yet.</p>
+                )}
+              </div>
+            </div>
+
+            <div profile>
+              <div>
+                <h3 className="text-lg font-semibold mb-3">
+                  Latest Completed Contests
+                </h3>
+                {completeContest.length ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {completeContest.map((s) => (
+                      <ContestCard
+                        key={s._id}
+                        contest={s}
+                        onEdit={(contest) => {
+                          setSelectedContest(contest);
+                          setContestModalOpen(true);
+                        }}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p>No contests yet.</p>
+                )}
+              </div>
+            </div>
+          </ProfileTabs>
         </div>
 
         <aside className="md:col-span-1">

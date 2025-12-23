@@ -31,7 +31,13 @@ export default function ProfileHeader({ onEdit }) {
           <div className="ml-auto flex gap-2">
             <button
               className="px-3 py-2 rounded bg-indigo-600 text-white hover:cursor-pointer"
-              onClick={onEdit}
+              onClick={ ()=>onEdit("password")}
+            >
+              Change Password
+            </button>
+            <button
+              className="px-3 py-2 rounded bg-indigo-600 text-white hover:cursor-pointer"
+              onClick={()=>onEdit("profile")}
             >
               Edit Profile
             </button>

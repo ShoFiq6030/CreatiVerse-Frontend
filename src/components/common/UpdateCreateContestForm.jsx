@@ -152,12 +152,12 @@ export default function UpdateCreateContestForm({
           `/contest/update-contest/${contest._id}`,
           payload
         );
-        refetchContests();
+        
         success("Contest updated successfully");
       } else {
         // Create new contest
         await axiosSecure.post("/contest/create-contest", payload);
-        refetchContests();
+       
         success("Contest created successfully");
       }
 

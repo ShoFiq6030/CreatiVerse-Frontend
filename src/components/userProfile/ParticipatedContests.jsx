@@ -45,7 +45,9 @@ export default function ParticipatedContests({ contests = [] }) {
           >
             <ContestCard contest={contest.contestDetails} />
             <div className="p-4 border-t border-gray-200">
-              <h5 className="text-lg font-medium text-center mb-4">Payment Details</h5>
+              <h5 className="text-lg font-medium text-center mb-4">
+                Payment Details
+              </h5>
               <div className="flex justify-between items-center">
                 <div className="flex items-center  gap-2">
                   <span
@@ -72,11 +74,15 @@ export default function ParticipatedContests({ contests = [] }) {
                 <span className="text-sm font-medium">
                   text: {contest.submissionText}
                 </span>
-                <img
-                  src={contest.submissionImg}
-                  className="w-full h-40"
-                  alt="Submission"
-                />
+                {contest.submissionImg ? (
+                  <img
+                    src={contest.submissionImg}
+                    className="w-full h-40"
+                    alt="Submission"
+                  />
+                ) : (
+                  <p className="text-sm font-medium">No image submitted</p>
+                )}
               </div>
             </div>
           </div>

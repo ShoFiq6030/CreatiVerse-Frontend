@@ -12,11 +12,14 @@ import WinningContests from "../components/userProfile/WinningContests";
 import ProfileAnalytics from "../components/userProfile/ProfileAnalytics";
 import Loading from "../components/common/Loading";
 import ModalWrapper from "../components/common/ModalWrapper";
+import useAuth from "../hooks/useAuth";
 
 export default function UserProfilePage() {
   const { theme } = useTheme();
-  const [editing, setEditing] = useState(false);
+  const [openEditProfileModal, setOpenEditProfileModal] = useState(false);
+  const [openEditPasswordModal, setOpenEditPasswordModal] = useState(false);
   const { userId } = useParams();
+  const { user } = useAuth();
 
   const wrapperBg =
     theme === "dark" ? "bg-gray-900 text-gray-100" : "bg-white text-gray-800";
@@ -29,9 +32,9 @@ export default function UserProfilePage() {
     },
   });
   const {
-    data: userContestData,
-    isLoading: userContestLoading,
-    isError: userContestError,
+    data: userParticipatedContestData,
+    isLoading: userParticipatedContestLoading,
+    isError: userParticipatedContestError,
   } = useQuery({
     queryKey: ["userContestData", userId],
     queryFn: async () => {
@@ -53,9 +56,30 @@ export default function UserProfilePage() {
     },
   });
 
-  // console.log(userContestData);
+  const userContestData = userParticipatedContestData?.filter(
+    (contest) => contest.contestDetails.status !== "completed"
+  );
+  const handleEdit = (value) => {
+    if (value === "profile") {
+      setOpenEditProfileModal(true);
+    } else if (value === "password") {
+      setOpenEditPasswordModal(true);
+    }
+  };
 
-  if (isLoading || userContestLoading || userWinningContestLoading) {
+  // console.log(userContestData);
+  if (user.role !== "user") {
+    return (
+      <div className="container h-screen mx-auto px-6 py-10 text-red-500">
+        Access Denied. You do not have permission to view this page.
+      </div>
+    );
+  }
+  if (
+    isLoading ||
+    userParticipatedContestLoading ||
+    userWinningContestLoading
+  ) {
     return (
       <div className="h-screen">
         <Loading />
@@ -63,7 +87,7 @@ export default function UserProfilePage() {
     );
   }
 
-  if (isError || userContestError || userWinningContestError) {
+  if (isError || userParticipatedContestError || userWinningContestError) {
     return (
       <div className="container h-screen mx-auto px-6 py-10 text-red-500">
         Error loading user profile data
@@ -71,35 +95,45 @@ export default function UserProfilePage() {
     );
   }
 
-  // // Mock data for contests (in real app, this would come from API)
-  // const participatedContests = data.participatedContests || [];
-  // const winningContests = data.winningContests || [];
   const userStats = {
-    participated: userContestData.length,
+    participated: userParticipatedContestData.length,
     wins: userWinningContestData.length,
-    totalEarnings: userWinningContestData.reduce(
-      (total, contest) => total + (contest.prizeMoney || 0),
+    points: userWinningContestData?.reduce(
+      (total, contest) => total + (contest?.prizeMoney || 0),
       0
     ),
-    avgRating: (
-      (userWinningContestData.length / userContestData.length) *
-      100
-    ).toFixed(2),
   };
-
+  console.log(userWinningContestData);
   return (
     <div className={`container min-h-screen mx-auto px-6 py-10 ${wrapperBg}`}>
-      {editing && (
+      {openEditProfileModal && (
         <ModalWrapper
           title={"Profile Edit Form"}
           isOpen={true}
-          onClose={() => setEditing(false)}
+          onClose={() => setOpenEditProfileModal(false)}
         >
-          <EditProfileForm user={data} onClose={() => setEditing(false)} />
+          <EditProfileForm
+            editValue="profile"
+            user={data}
+            onClose={() => setOpenEditProfileModal(false)}
+          />
+        </ModalWrapper>
+      )}
+      {openEditPasswordModal && (
+        <ModalWrapper
+          title={"Change Password"}
+          isOpen={true}
+          onClose={() => setOpenEditPasswordModal(false)}
+        >
+          <EditProfileForm
+            editValue="password"
+            user={data}
+            onClose={() => setOpenEditPasswordModal(false)}
+          />
         </ModalWrapper>
       )}
 
-      <ProfileHeader user={data} onEdit={() => setEditing(true)} />
+      <ProfileHeader user={data} onEdit={handleEdit} />
 
       <div className="mt-8">
         <ProfileStats stats={userStats} />

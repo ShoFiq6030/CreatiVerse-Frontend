@@ -1,5 +1,6 @@
 import React from "react";
 import Loading from "./Loading";
+import { useTheme } from "../../hooks/useTheme";
 
 export default function ConfirmModal({
   isOpen,
@@ -12,6 +13,7 @@ export default function ConfirmModal({
   confirmVariant = "btn-primary",
   loading = false,
 }) {
+  const { theme } = useTheme();
   if (!isOpen) return null;
 
   return (
@@ -19,7 +21,13 @@ export default function ConfirmModal({
       <div className="bg-base-100 rounded-xl w-full max-w-md p-6 relative shadow-xl">
         {/* Header */}
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold">{title}</h3>
+          <h3
+            className={`${
+              theme === "dark" ? "text-white" : " text-black"
+            }text-lg font-semibold`}
+          >
+            {title}
+          </h3>
           <button
             onClick={onCancel}
             className="btn btn-sm btn-circle btn-ghost"
@@ -31,7 +39,13 @@ export default function ConfirmModal({
 
         {/* Body */}
         <div className="mb-6">
-          <p className="text-sm text-gray-800 dark:text-gray-300">{message}</p>
+          <p
+            className={`${
+              theme === "dark" ? "text-white" : " text-black"
+            }`}
+          >
+            {message}
+          </p>
         </div>
 
         {/* Footer */}

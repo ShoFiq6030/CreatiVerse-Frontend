@@ -42,7 +42,7 @@
 ### Install
 
 ```bash
-git clone <this-repo-url>
+git clone https://github.com/ShoFiq6030/CreatiVerse-Frontend.git
 cd assignment-11-frontend
 npm install
 # or
