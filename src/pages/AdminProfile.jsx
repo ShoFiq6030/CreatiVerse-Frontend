@@ -155,8 +155,8 @@ export default function AdminProfile() {
         />
       </ModalWrapper>
 
-      <div className="grid md:grid-cols-3 gap-6 mb-6">
-        <div className="md:col-span-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div className="md:col-span-2 order-2 md:order-2">
           <ProfileTabs>
             <div participated>
               <div className="space-y-6">
@@ -237,8 +237,7 @@ export default function AdminProfile() {
             </div>
           </ProfileTabs>
         </div>
-
-        <aside className="md:col-span-1">
+        <aside className="md:col-span-1 order-1 md:order-1">
           <div className="sticky top-6 space-y-4">
             <ProfileStats stats={stats} />
 
@@ -258,7 +257,7 @@ export default function AdminProfile() {
               >
                 Create Contest
               </button>
-              <button className="btn w-full">System Settings</button>
+              {/* <button className="btn w-full">System Settings</button> */}
             </div>
           </div>
         </aside>

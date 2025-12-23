@@ -9,12 +9,12 @@ export default function ProfileHeader({ onEdit }) {
   const muted = theme === "dark" ? "text-gray-300" : "text-gray-600";
 
   return (
-    <div className={`flex items-center gap-6 mb-6`}>
-      <div className="w-28 h-28 rounded-full overflow-hidden border-2">
+    <div className={`flex items-center gap-1 md:gap-6 mb-6`}>
+      <div className="w-10 h-10 md:w-28 md:h-28 rounded-full overflow-hidden border-2">
         <img
           src={user?.profileImage || "https://via.placeholder.com/150"}
           alt={user?.name || "User"}
-          className="w-full h-full object-cover"
+          className="w-10 h-10 md:w-full md:h-full object-cover"
         />
       </div>
 
@@ -23,14 +23,14 @@ export default function ProfileHeader({ onEdit }) {
           <div>
             <h2 className="text-2xl font-bold">{user?.name || "Unnamed"}</h2>
             <p className={`text-sm ${muted}`}>{user?.role || "Member"}</p>
-            <p className={`mt-2 text-sm ${muted}`}>
+            <p className={`mt-2 text-sm ${muted} hidden md:block`}>
               {user?.bio || "No bio yet."}
             </p>
           </div>
 
           <div className="ml-auto flex gap-2">
             <button
-              className="px-3 py-2 rounded bg-indigo-600 text-white hover:cursor-pointer"
+              className=" px-1 md:px-3 md:py-2 text-sm rounded bg-indigo-600 text-white hover:cursor-pointer"
               onClick={ ()=>onEdit("password")}
             >
               Change Password
@@ -41,9 +41,9 @@ export default function ProfileHeader({ onEdit }) {
             >
               Edit Profile
             </button>
-            <Link to="/all-contests" className="px-3 py-2 rounded border">
+            {/* <Link to="/all-contests" className="px-3 py-2 rounded border">
               Browse Contests
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>
