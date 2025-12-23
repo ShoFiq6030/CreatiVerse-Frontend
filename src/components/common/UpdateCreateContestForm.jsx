@@ -152,12 +152,12 @@ export default function UpdateCreateContestForm({
           `/contest/update-contest/${contest._id}`,
           payload
         );
-        
+
         success("Contest updated successfully");
       } else {
         // Create new contest
         await axiosSecure.post("/contest/create-contest", payload);
-       
+
         success("Contest created successfully");
       }
 
@@ -175,9 +175,9 @@ export default function UpdateCreateContestForm({
     userRole === "admin" || (userRole === "creator" && status === "completed");
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-        <div>
+    <form onSubmit={handleSubmit} className="space-y-4 min-w-0 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 min-w-0">
+        <div className="min-w-0">
           <label className="text-sm font-medium">Contest Name</label>
           <input
             type="text"
@@ -194,7 +194,7 @@ export default function UpdateCreateContestForm({
           )}
         </div>
 
-        <div className="md:col-span-2">
+        <div className="md:col-span-2 min-w-0">
           <label className="text-sm font-medium">Contest Image</label>
           <input
             type="file"
@@ -224,7 +224,7 @@ export default function UpdateCreateContestForm({
                 <img
                   src={imagePreview || formData.image}
                   alt="Contest preview"
-                  className="w-22 h-22 object-cover rounded-lg border"
+                  className="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg border max-w-full"
                 />
               </div>
             </div>
@@ -364,16 +364,20 @@ export default function UpdateCreateContestForm({
         </div>
       )}
 
-      <div className="flex gap-3 justify-end">
+      <div className="flex flex-col sm:flex-row gap-3 justify-end">
         <button
           type="button"
-          className="btn"
+          className="btn w-full sm:w-auto"
           onClick={onClose}
           disabled={loading}
         >
           Cancel
         </button>
-        <button type="submit" className="btn btn-primary" disabled={loading}>
+        <button
+          type="submit"
+          className="btn btn-primary w-full sm:w-auto"
+          disabled={loading}
+        >
           {loading ? (
             <span className="loading loading-spinner"></span>
           ) : contest ? (

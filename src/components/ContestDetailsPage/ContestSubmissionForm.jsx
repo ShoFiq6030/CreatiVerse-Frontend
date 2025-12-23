@@ -33,9 +33,9 @@ export default function ContestSubmissionForm({
 
       const res = await axiosSecure.post(`/submissions/${contestId}`, payload);
       // console.log(res);
-      success(res.massage || "Submission Successfully");
-      refetch();
-      submissionDataRefetch();
+      success(res?.data?.message || "Submission successful");
+      refetch?.();
+      submissionDataRefetch?.();
       onClose?.();
     } catch (err) {
       console.log(err);
@@ -60,14 +60,14 @@ export default function ContestSubmissionForm({
   };
 
   return (
-    <div className="">
-      <form onSubmit={handleSubmit} className="space-y-3">
+    <div className="w-full max-w-full max-h-[70vh] overflow-y-auto pr-2">
+      <form onSubmit={handleSubmit} className="space-y-3 w-full min-w-0">
         <div>
           <label className="text-sm">Submission Text</label>
           <textarea
             value={submissionText}
             onChange={(e) => setSubmissionText(e.target.value)}
-            className="textarea textarea-bordered w-full"
+            className="textarea textarea-bordered w-full resize-y h-24 md:h-28"
             rows={4}
           />
         </div>
@@ -79,25 +79,26 @@ export default function ContestSubmissionForm({
             className="file-input file-input-bordered w-full"
           />
           {imagePreview && (
-            <div className="mt-2">
+            <div className="mt-2 inline-block">
               <img
                 src={imagePreview}
                 alt="Preview"
-                className="w-20 h-20 object-cover rounded-full"
+                className="w-20 h-20 object-cover rounded-md"
+                style={{ maxWidth: "100%", height: "auto" }}
               />
             </div>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <button
-            className="btn bg-indigo-600 text-white"
+            className="btn bg-indigo-600 text-white w-full sm:w-auto"
             type="submit"
             disabled={loading}
           >
-            Submit
+            {loading ? "Submitting..." : "Submit"}
           </button>
           <button
-            className="btn"
+            className="btn w-full sm:w-auto"
             type="button"
             onClick={onClose}
             disabled={loading}
