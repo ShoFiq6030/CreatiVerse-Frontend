@@ -19,6 +19,7 @@ export default function ContestDetails() {
   const [timeLeft, setTimeLeft] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [paymentModal, setPaymentModal] = useState(false);
+  const [loading,setLoading] =useState(false)
   const { user } = useAuth();
   const { success, error } = useToast();
 
@@ -126,6 +127,7 @@ export default function ContestDetails() {
     // setPaymentModal(false);
     // setOpenModal(true);
     try {
+      setLoading(true)
       const res = await axiosSecure.post(`/payments/process-payment`, {
         userId: user._id,
         contestId: contest._id,
@@ -140,6 +142,8 @@ export default function ContestDetails() {
     } catch (error) {
       console.log(error);
       error("Payment failed. Please try again.");
+    }finally{
+      setLoading(false)
     }
   };
   const handleSubmission = () => {
@@ -173,6 +177,7 @@ export default function ContestDetails() {
             onClose={() => setPaymentModal(false)}
             entryFee={contest.price}
             onPay={handlePayment}
+            loading={loading}
           />
         )}
 
