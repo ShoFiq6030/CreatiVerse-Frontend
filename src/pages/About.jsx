@@ -29,7 +29,7 @@ export default function About() {
 
   return (
     <div
-      className={`container mx-auto  px-6 py-12 relative top-20 ${wrapperBg}`}
+      className={`container mx-auto   px-6 py-12   ${wrapperBg}`}
     >
       <section className="max-w-4xl  mx-auto text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">About Our Contest Platform</h1>
