@@ -187,9 +187,7 @@ export default function Leaderboard() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead
-                className={`${
-                  theme === "dark" ? "bg-gray-900" : "bg-gray-50"
-                }`}
+                className={`${theme === "dark" ? "bg-gray-900" : "bg-gray-50"}`}
               >
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
@@ -217,9 +215,11 @@ export default function Leaderboard() {
                       theme === "dark"
                         ? "hover:bg-gray-700"
                         : "hover:bg-gray-50"
-                    } ${getRankBackground(index + 1)} border-l-4 ${
-                      getRankBorder(index + 1)
-                    }`}
+                    } ${getRankBackground(
+                      index + 1
+                    )} border-l-4 ${getRankBorder(index + 1)}
+                    ${theme === "dark" ? "text-gray-900" : ""}
+                    `}
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
@@ -253,8 +253,8 @@ export default function Leaderboard() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-12 w-12">
-                          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-purple-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm">
+                        <div className="shrink-0 h-12 w-12">
+                          <div className="h-12 w-12 rounded-full bg-linear-to-br from-purple-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm">
                             {entry.user.profileImage ? (
                               <img
                                 className="h-12 w-12 rounded-full object-cover"
@@ -336,7 +336,10 @@ export default function Leaderboard() {
           >
             Ready to climb the leaderboard?
           </p>
-          <Link to="/all-contests" className="bg-purple-600 text-white py-3 px-8 rounded-full hover:bg-purple-700 transition-colors">
+          <Link
+            to="/all-contests"
+            className="bg-purple-600 text-white py-3 px-8 rounded-full hover:bg-purple-700 transition-colors"
+          >
             Join Contests
           </Link>
         </div>
