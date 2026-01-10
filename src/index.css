@@ -19,17 +19,18 @@
 .hero-gradient-color {
   background: linear-gradient(
     to right,
-    #8b5cf6,
+    #b39de6,
     #ec4899,
     #f43f5e,
     #f97316,
     #f43f5e,
     #ec4899,
     #f43f5e,
-    #f97316
+    #f97316,
+    #b5a3e0
   );
-  background-size: 300% 300%;
-  animation: gradientMove 30s linear infinite;
+  background-size: 400% 400%;
+  animation: gradientMove 20s linear infinite;
 }
 .hero-text {
   background: linear-gradient(

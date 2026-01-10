@@ -55,8 +55,44 @@ export default function PopularContest() {
         </div>
 
         {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <Loading />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[...Array(6)].map((_, index) => (
+              <div
+                key={`skeleton-${index}`}
+                className={`rounded-2xl p-6 ${cardBg} shadow-xl relative overflow-hidden animate-pulse`}
+              >
+                <div className="relative">
+                  <div className="aspect-square rounded-xl overflow-hidden bg-gray-300 dark:bg-gray-600 mb-4"></div>
+                  
+                  <div className="absolute top-4 left-4">
+                    <div className={`px-2 py-1 rounded-full text-xs font-semibold ${theme === "dark" ? "bg-gray-600" : "bg-gray-200"}`}></div>
+                  </div>
+
+                  <div className="absolute top-4 right-4">
+                    <div className="bg-gray-300 dark:bg-gray-600 rounded-full w-16 h-6"></div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-3/4"></div>
+                  <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-full"></div>
+                  <div className="h-4 bg-gray-300 dark:bg-gray-600 rounded w-5/6"></div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className={`p-3 rounded-lg ${theme === "dark" ? "bg-gray-600" : "bg-gray-200"}`}>
+                      <div className="h-3 bg-gray-400 dark:bg-gray-500 rounded w-1/2 mb-2"></div>
+                      <div className="h-4 bg-gray-400 dark:bg-gray-500 rounded w-3/4"></div>
+                    </div>
+                    <div className={`p-3 rounded-lg ${theme === "dark" ? "bg-gray-600" : "bg-gray-200"}`}>
+                      <div className="h-3 bg-gray-400 dark:bg-gray-500 rounded w-1/2 mb-2"></div>
+                      <div className="h-4 bg-gray-400 dark:bg-gray-500 rounded w-3/4"></div>
+                    </div>
+                  </div>
+
+                  <div className="h-10 bg-gray-300 dark:bg-gray-600 rounded-lg"></div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <>

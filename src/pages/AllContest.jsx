@@ -6,6 +6,7 @@ import axiosSecure from "../api/axiosSecure";
 import ContestCard from "../components/common/ContestCard";
 import { categories } from "../constants/categories";
 import Loading from "../components/common/Loading";
+import SkeletonCard from "../components/common/SkeletonCard";
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import useDebounce from "../hooks/useDebounce";
 import { useTheme } from "../hooks/useTheme";
@@ -322,9 +323,8 @@ export default function AllContest() {
       </div>
 
       {isLoading ? (
-        <div className="h-screen">
-          {" "}
-          <Loading />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <SkeletonCard count={8} />
         </div>
       ) : error ? (
         <p className="text-red-500">{error}</p>

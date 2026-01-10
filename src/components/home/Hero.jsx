@@ -23,7 +23,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className=" text-white relative overflow-hidden">
+    <section className=" text-white relative overflow-hidden py-10">
       {/* Animated background layers */}
       <div
         className={`hero-gradient-color animate-gradient inset-0 absolute`}
