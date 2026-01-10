@@ -2,3 +2,49 @@
 @plugin "daisyui" {
   themes: light --default, dark --prefersdark;
 }
+
+/* Hero section gradient animations */
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.hero-gradient-color {
+  background: linear-gradient(
+    to right,
+    #8b5cf6,
+    #ec4899,
+    #f43f5e,
+    #f97316,
+    #f43f5e,
+    #ec4899,
+    #f43f5e,
+    #f97316
+  );
+  background-size: 300% 300%;
+  animation: gradientMove 30s linear infinite;
+}
+.hero-text {
+  background: linear-gradient(
+    to right,
+
+    #30060d,
+    #97501d,
+    #714d53,
+    #561d39,
+    #f43f5e,
+    #8b4f24,
+    #7447de,
+    #dc3b8c
+  );
+  background-clip: text;
+  background-size: 300% 300%;
+  animation: gradientMove 10s linear infinite;
+}
