@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router";
 import ThemeToggle from "./ThemeToggle";
 import logo from "../../assets/logo.png";
+import logoWhite from "../../assets/logo-white.png";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { RiCloseLargeLine } from "react-icons/ri";
 import { useState } from "react";
@@ -49,9 +50,13 @@ export default function NavBar() {
     <div className="container mx-auto bg-base-100 shadow-sm fixed top-0 left-0 right-0 z-50">
       <div className="navbar">
         <div className="md:flex-1">
-          <Link>
+          {theme === "dark" ?  <Link>
+            <img src={logoWhite} alt="logo" className="w-26" />
+          </Link> :  <Link>
             <img src={logo} alt="logo" className="w-24" />
-          </Link>
+          </Link>}
+         
+         
         </div>
         {/* desktop menu  */}
         <div className="hidden md:block">

@@ -1,15 +1,17 @@
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa";
 import { useTheme } from "../../hooks/useTheme";
 import logo from "./../../assets/logo.png";
+import logoWhite from "./../../assets/logo-white.png";
 import { Link } from "react-router";
 
 export default function Footer() {
   const { theme } = useTheme();
 
-  const sectionBg = theme === "dark" 
-    ? "bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900" 
-    : "bg-gradient-to-br from-purple-50 via-pink-50 to-red-50";
-  
+  const sectionBg =
+    theme === "dark"
+      ? "bg-gradient-to-br from-gray-900 via-purple-900/20 to-gray-900"
+      : "bg-gradient-to-br from-purple-50 via-pink-50 to-red-50";
+
   const textColor = theme === "dark" ? "text-white" : "text-gray-800";
   const mutedText = theme === "dark" ? "text-gray-300" : "text-gray-600";
 
@@ -27,17 +29,25 @@ export default function Footer() {
           {/* Logo + Website Name */}
           <div className="flex  items-center gap-4">
             <Link to="/" className="flex flex-col items-center gap-3">
-              <img src={logo} alt="ContestHub Logo" className=" h-12" />
+              {theme === "dark" ? (
+                <img src={logoWhite} alt="Logo" className=" h-12" />
+              ) : (
+                <img src={logo} alt="Logo" className=" h-12" />
+              )}
+
               <div>
-                
-                <p className={`text-sm ${mutedText}`}>Your Creative Competition Platform</p>
+                <p className={`text-sm ${mutedText}`}>
+                  Your Creative Competition Platform
+                </p>
               </div>
             </Link>
           </div>
 
           {/* Social Links */}
           <div className="flex items-center gap-4">
-            <span className={`text-sm font-semibold ${mutedText} mr-2`}>Follow Us:</span>
+            <span className={`text-sm font-semibold ${mutedText} mr-2`}>
+              Follow Us:
+            </span>
             <div className="flex gap-3">
               <a
                 href="https://facebook.com"
@@ -63,7 +73,11 @@ export default function Footer() {
       </div>
 
       {/* Bottom Bar */}
-      <div className={`border-t ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'} py-4`}>
+      <div
+        className={`border-t ${
+          theme === "dark" ? "border-gray-700" : "border-gray-200"
+        } py-4`}
+      >
         <div className="container mx-auto px-6">
           <p className={`text-center text-sm ${mutedText}`}>
             Copyright © 2025 ContestHub. All rights reserved.
