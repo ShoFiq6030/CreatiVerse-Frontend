@@ -25,6 +25,7 @@ const Leaderboard = lazy(() => import("../pages/Leaderboard"));
 const PaymentSuccess = lazy(() => import("../pages/PaymentSuccess"));
 const PaymentFailed = lazy(() => import("../pages/PaymentFailed"));
 const NotFound = lazy(() => import("../pages/NotFound"));
+const Support = lazy(() => import("../pages/Support"));
 
 let router = createBrowserRouter([
   {
@@ -101,6 +102,10 @@ let router = createBrowserRouter([
       {
         path: "/leaderboard",
         element: <Leaderboard />,
+      },
+      {
+        path: "/support",
+        element: <Support />,
       },
     ],
   },

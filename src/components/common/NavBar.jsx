@@ -21,6 +21,7 @@ export default function NavBar() {
     { name: "All Contest", path: "/all-contests" },
     { name: "Leaderboard", path: "/leaderboard" },
     { name: "About", path: "/about" },
+    { name: "Support", path: "/support" },
 
     // show ONLY when NOT logged in
     { name: "Login", path: "/login", authOnly: true, loading: authLoading },
