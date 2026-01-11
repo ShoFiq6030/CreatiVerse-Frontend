@@ -223,7 +223,7 @@ export default function ContestCard({ contest, onEdit, onDelete }) {
 
               {/* Creator can delete only their own contest when status is pending */}
               {user?._id === contest.creator._id &&
-                contest.status === "pending" && (
+                contest.status === "pending" &&  user?.role !== "admin"&& (
                   <>
                     <button
                       onClick={() => onEdit?.(contest)}

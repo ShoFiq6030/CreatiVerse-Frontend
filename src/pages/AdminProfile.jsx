@@ -12,6 +12,7 @@ import ContestCard from "../components/common/ContestCard";
 import UpdateCreateContestForm from "../components/common/UpdateCreateContestForm";
 import Loading from "../components/common/Loading";
 import useAuth from "../hooks/useAuth";
+import AdminUserSideBar from "./../components/userProfile/AdminUserSideBar";
 
 export default function AdminProfile() {
   const { theme } = useTheme();
@@ -237,30 +238,7 @@ export default function AdminProfile() {
             </div>
           </ProfileTabs>
         </div>
-        <aside className="md:col-span-1 order-1 md:order-2">
-          <div className="sticky top-6 space-y-4">
-            <ProfileStats stats={stats} />
-
-            {/* <div className="p-4 rounded-lg shadow">
-              <h4 className="font-semibold mb-2">About</h4>
-              <p className="text-sm">{data?.bio || "No bio yet."}</p>
-            </div> */}
-
-            <div className="p-4 rounded-lg shadow">
-              <h4 className="font-semibold mb-2">Admin Actions</h4>
-              <Link to={`/admin/manage-users`} className="btn w-full mb-2">
-                Manage Users
-              </Link>
-              <button
-                className="btn w-full mb-2"
-                onClick={() => setContestModalOpen(true)}
-              >
-                Create Contest
-              </button>
-              {/* <button className="btn w-full">System Settings</button> */}
-            </div>
-          </div>
-        </aside>
+        <AdminUserSideBar setContestModalOpen={setContestModalOpen} stats={stats} statsVisible={true} />
       </div>
     </div>
   );

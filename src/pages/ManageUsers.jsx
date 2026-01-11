@@ -24,6 +24,7 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import { useToast } from "../provider/ToastProvider";
+import AdminUserSideBar from "./../components/userProfile/AdminUserSideBar";
 
 export default function ManageUsers() {
   const { user } = useAuth();
@@ -195,94 +196,100 @@ export default function ManageUsers() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div
-          className={`${
-            theme === "dark" ? "bg-gray-800" : "bg-white"
-          } rounded-lg shadow p-6`}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p
-                className={`${
-                  theme === "dark" ? "text-gray-400" : "text-gray-600"
+      <div className=" md:flex ">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 md:w-2/3">
+          <div
+            className={`${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            } rounded-lg shadow p-6`}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p
+                  className={`${
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Total Users
+                </p>
+                <p className="text-2xl font-bold">{usersData?.length}</p>
+              </div>
+              <FaUser
+                className={`text-4xl ${
+                  theme === "dark" ? "text-gray-400" : "text-gray-400"
                 }`}
-              >
-                Total Users
-              </p>
-              <p className="text-2xl font-bold">{usersData?.length}</p>
+              />
             </div>
-            <FaUser
-              className={`text-4xl ${
-                theme === "dark" ? "text-gray-400" : "text-gray-400"
-              }`}
-            />
           </div>
-        </div>
 
-        <div
-          className={`${
-            theme === "dark" ? "bg-gray-800" : "bg-white"
-          } rounded-lg shadow p-6`}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p
-                className={`${
-                  theme === "dark" ? "text-gray-400" : "text-gray-600"
-                }`}
-              >
-                Admins
-              </p>
-              <p className="text-2xl font-bold text-blue-600">
-                {roleCounts.admin}
-              </p>
+          <div
+            className={`${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            } rounded-lg shadow p-6`}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p
+                  className={`${
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Admins
+                </p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {roleCounts.admin}
+                </p>
+              </div>
+              <FaUserShield className="text-4xl text-blue-500" />
             </div>
-            <FaUserShield className="text-4xl text-blue-500" />
           </div>
-        </div>
 
-        <div
-          className={`${
-            theme === "dark" ? "bg-gray-800" : "bg-white"
-          } rounded-lg shadow p-6`}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p
-                className={`${
-                  theme === "dark" ? "text-gray-400" : "text-gray-600"
-                }`}
-              >
-                Creators
-              </p>
-              <p className="text-2xl font-bold text-green-600">
-                {roleCounts.creator}
-              </p>
+          <div
+            className={`${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            } rounded-lg shadow p-6`}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p
+                  className={`${
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Creators
+                </p>
+                <p className="text-2xl font-bold text-green-600">
+                  {roleCounts.creator}
+                </p>
+              </div>
+              <FaUserTie className="text-4xl text-green-500" />
             </div>
-            <FaUserTie className="text-4xl text-green-500" />
+          </div>
+          <div
+            className={`${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            } rounded-lg shadow p-6`}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p
+                  className={`${
+                    theme === "dark" ? "text-gray-400" : "text-gray-600"
+                  }`}
+                >
+                  Normal Users
+                </p>
+                <p className="text-2xl font-bold text-green-00">
+                  {roleCounts.user}
+                </p>
+              </div>
+              <FaUserTie className="text-4xl text-green-300" />
+            </div>
           </div>
         </div>
-        <div
-          className={`${
-            theme === "dark" ? "bg-gray-800" : "bg-white"
-          } rounded-lg shadow p-6`}
-        >
-          <div className="flex items-center justify-between">
-            <div>
-              <p
-                className={`${
-                  theme === "dark" ? "text-gray-400" : "text-gray-600"
-                }`}
-              >
-                Normal Users
-              </p>
-              <p className="text-2xl font-bold text-green-00">
-                {roleCounts.user}
-              </p>
-            </div>
-            <FaUserTie className="text-4xl text-green-300" />
-          </div>
+        {/* admin action  */}
+        <div className="md:w-1/3">
+          <AdminUserSideBar />
         </div>
       </div>
 
